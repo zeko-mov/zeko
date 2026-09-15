@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>لوحة الإدارة</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--primary:#6C5CE7;--primary2:#a29bfe;--bg:#f1f2f9;--card:#fff;--text:#151a2d;--muted:#71788f;--border:#e5e7f2;--ok:#22c55e;--bad:#ef4444;--warn:#f59e0b;--r:16px;--sh:0 6px 22px rgba(20,20,60,.07)}
+body.dark{--bg:#0c0f1d;--card:#151a2e;--text:#e9ebf7;--muted:#98a0bd;--border:#242a45;--sh:0 6px 22px rgba(0,0,0,.4)}
+body{font-family:"Segoe UI",Tahoma,system-ui,sans-serif;background:var(--bg);color:var(--text);transition:.2s}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:250px;min-width:250px;background:var(--card);border-left:1px solid var(--border);padding:16px 12px;position:sticky;top:0;height:100vh;overflow:auto}
+.sidebar .logo{display:flex;align-items:center;gap:10px;padding:9px;font-weight:800;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:16px}
+.sidebar .logo .l-ic{width:42px;height:42px;min-width:42px;background:linear-gradient(135deg,var(--primary),var(--primary2));border-radius:13px;display:grid;place-items:center;font-size:20px}
+.sidebar .logo span{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-btn{display:flex;align-items:center;gap:11px;width:100%;padding:11px 13px;border-radius:12px;font-weight:600;font-size:14px;color:var(--muted);transition:.2s;margin-bottom:3px;text-align:right}
+.nav-btn:hover{background:var(--bg);color:var(--text)}
+.nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;box-shadow:var(--sh)}
+.nav-btn .n-ic{font-size:18px}
+.main{flex:1;min-width:0;padding:20px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.top h1{font-size:22px}
+.top .actions{display:flex;gap:8px;align-items:center}
+.icon-btn{width:40px;height:40px;border-radius:12px;background:var(--card);border:1px solid var(--border);display:grid;place-items:center;font-size:17px}
+.icon-btn:hover{background:var(--bg)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:17px;box-shadow:var(--sh);margin-bottom:14px}
+.card-t{font-weight:800;font-size:16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap}
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.g3{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+.g4{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+.stat-box{background:var(--bg);border:1px solid var(--border);border-radius:15px;padding:14px;display:flex;align-items:center;gap:11px}
+.stat-box .s-ic{width:44px;height:44px;min-width:44px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary2));display:grid;place-items:center;font-size:20px;color:#fff}
+.stat-box .s-t b{display:block;font-size:20px}
+.stat-box .s-t span{font-size:12px;color:var(--muted)}
+.btn{background:var(--primary);color:#fff;border-radius:12px;padding:10px 16px;font-weight:700;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.18s;border:1px solid transparent}
+.btn:hover{filter:brightness(1.08)}
+.btn:active{transform:scale(.97)}
+.btn.block{width:100%}
+.btn.ghost{background:var(--bg);color:var(--text);border-color:var(--border)}
+.btn.ok{background:var(--ok)}
+.btn.bad{background:var(--bad)}
+.btn.warn{background:var(--warn)}
+.btn.sm{padding:6px 12px;font-size:12.5px;border-radius:10px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12.5px;font-weight:700;margin-bottom:5px;color:var(--muted)}
+.inp{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:10px 13px;outline:none;transition:.2s;font-size:14px}
+.inp:focus{border-color:var(--primary);background:var(--card)}
+textarea.inp{min-height:80px;resize:vertical;line-height:1.7}
+select.inp{cursor:pointer}
+.row{display:flex;align-items:center;gap:11px;padding:11px;border-radius:14px;background:var(--bg);margin-bottom:8px;border:1px solid var(--border)}
+.row .av{width:40px;height:40px;min-width:40px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary2));display:grid;place-items:center;font-size:16px;color:#fff;font-weight:800}
+.row .m{flex:1;min-width:0}
+.row .m b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .m span{font-size:11.5px;color:var(--muted);display:block}
+.chip{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:700}
+.pill{background:var(--bg);border:1px solid var(--border);border-radius:999px;padding:3px 11px;font-size:11px;font-weight:700;color:var(--muted)}
+.empty{text-align:center;padding:34px 14px;color:var(--muted);font-size:14px}
+.empty .e{font-size:44px;display:block;margin-bottom:11px}
+.toast{position:fixed;bottom:30px;right:50%;transform:translate(50%,26px);background:#151a2d;color:#fff;padding:12px 20px;border-radius:14px;font-size:14px;font-weight:700;opacity:0;pointer-events:none;transition:.3s;z-index:999;max-width:90vw}
+.toast.show{opacity:1;transform:translate(50%,0)}
+.toast.ok{background:var(--ok)}.toast.bad{background:var(--bad)}
+.modal{position:fixed;inset:0;background:rgba(8,10,22,.65);display:none;align-items:center;justify-content:center;z-index:200;padding:16px;backdrop-filter:blur(4px)}
+.modal.open{display:flex}
+.modal-box{background:var(--card);border-radius:20px;padding:20px;width:100%;max-width:600px;max-height:90vh;overflow:auto}
+.modal-box h3{font-size:17px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.flex{display:flex;align-items:center;gap:9px}
+.flex-between{display:flex;align-items:center;justify-content:space-between;gap:9px}
+.flex-wrap{flex-wrap:wrap}
+.mt{margin-top:12px}.mb{margin-bottom:12px}.center{text-align:center}
+.muted{color:var(--muted);font-size:13px;line-height:1.8}
+.auth-wrap{min-height:100vh;display:grid;place-items:center;padding:18px;background:linear-gradient(150deg,#151a2d,#0c0f1d)}
+.auth-box{width:100%;max-width:420px;background:var(--card);border-radius:22px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.auth-box .adm-logo{width:80px;height:80px;margin:0 auto 14px;border-radius:22px;background:linear-gradient(135deg,var(--primary),var(--primary2));display:grid;place-items:center;font-size:38px}
+.auth-box h1{text-align:center;font-size:21px;margin-bottom:5px}
+.auth-box p.sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:20px}
+.tabs{display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:18px}
+.tabs button{flex:1;padding:9px;border-radius:10px;font-weight:700;font-size:13px;color:var(--muted)}
+.tabs button.active{background:var(--card);color:var(--primary);box-shadow:var(--sh)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{padding:10px 8px;text-align:right;border-bottom:1px solid var(--border)}
+th{color:var(--muted);font-size:11.5px;font-weight:700;text-transform:uppercase}
+tr:hover td{background:var(--bg)}
+.tag{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:2px 8px;font-size:11px;font-weight:600;margin:0 0 3px 3px}
+.tag.ok{background:rgba(34,197,94,.15);border-color:var(--ok);color:var(--ok)}
+.tag.bad{background:rgba(239,68,68,.15);border-color:var(--bad);color:var(--bad)}
+.tag.warn{background:rgba(245,158,11,.15);border-color:var(--warn);color:var(--warn)}
+.switch{display:inline-flex;align-items:center;gap:7px;cursor:pointer;font-size:13px}
+.switch input{display:none}
+.switch .tog{width:40px;height:22px;background:var(--border);border-radius:12px;position:relative;transition:.2s}
+.switch .tog:after{content:"";position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;right:3px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.switch input:checked + .tog{background:var(--ok)}
+.switch input:checked + .tog:after{right:21px}
+.bar{height:9px;background:var(--bg);border-radius:9px;overflow:hidden;border:1px solid var(--border)}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--primary2));border-radius:9px}
+.color-input{width:60px;height:38px;border:1px solid var(--border);border-radius:10px;padding:3px;background:var(--bg);cursor:pointer}
+.mobile-menu{display:none}
+@media (max-width:820px){
+  .sidebar{position:fixed;top:0;right:-270px;z-index:300;width:260px;transition:.3s;box-shadow:-10px 0 40px rgba(0,0,0,.15)}
+  .sidebar.open{right:0}
+  .main{padding:14px}
+  .mobile-menu{display:grid}
+  .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:250}
+  .overlay.open{display:block}
+  table{font-size:12px}
+  th,td{padding:8px 5px}
+}
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:9px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" class="toast"></div>
+<div id="modal" class="modal"><div class="modal-box" id="modalBox"></div></div>
+<div class="overlay" id="overlay"></div>
+
+<script>
+/* ==========================================================================
+   قاعدة البيانات المشتركة مع index.html — نفس المفتاح ونفس البنية
+   ========================================================================== */
+const DB_KEY = 'zezoLearnDB_v2';
+const ADMIN_SESSION = 'zezoLearnAdminSession_v2';
+
+const uid = p => p + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const now = () => Date.now();
+const fmt = t => new Date(t).toLocaleString('ar-EG',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'});
+const fmtFull = t => new Date(t).toLocaleString('ar-EG');
+
+function makeDefaultDB(){
+  const Q = (id,subjectId,unitId,lessonId,text,options,correct,explanation,difficulty,points,tags)=>
+    ({id,subjectId,unitId,lessonId,text,image:'',options,correct,explanation,difficulty,points,tags:tags||[]});
+  return {
+    settings:{
+      platformName:'Zezo Learn', logo:'🚀',
+      description:'منصة تعليمية تفاعلية للمذاكرة والمسابقات',
+      welcome:'جاهز للمذاكرة اليوم؟ 🔥',
+      primaryColor:'#6C5CE7', accentColor:'#a29bfe',
+      adminUser:'admin', adminPassword:'admin123',
+      footer:'صُنع بحب 💜', maintenance:false,
+      showVideo:true, showPdf:true, showImages:true, allowRegister:true
+    },
+    users:[], subjects:[
+      {id:'sub_math',name:'الرياضيات',icon:'🧮',color:'#6C5CE7',order:1,visible:true},
+      {id:'sub_sci', name:'العلوم',   icon:'🔬',color:'#22c55e',order:2,visible:true},
+      {id:'sub_ar',  name:'اللغة العربية',icon:'📖',color:'#f59e0b',order:3,visible:true},
+      {id:'sub_soc', name:'الدراسات', icon:'🌍',color:'#0ea5e9',order:4,visible:true},
+      {id:'sub_en',  name:'اللغة الإنجليزية',icon:'🇬🇧',color:'#ef4444',order:5,visible:true}
+    ],
+    units:[
+      {id:'u1',subjectId:'sub_math',name:'الوحدة الأولى: العمليات الأساسية',order:1},
+      {id:'u2',subjectId:'sub_math',name:'الوحدة الثانية: الكسور',order:2},
+      {id:'u3',subjectId:'sub_sci', name:'الوحدة الأولى: الكائنات الحية',order:1}
+    ],
+    lessons:[
+      {id:'l1',unitId:'u1',subjectId:'sub_math',title:'الدرس الأول: الجمع والطرح',order:1,locked:false,
+       content:'الجمع هو ضم مجموعتين للحصول على المجموع، والطرح هو إزالة كمية من كمية أخرى.',video:'',pdf:'',images:[]},
+      {id:'l2',unitId:'u1',subjectId:'sub_math',title:'الدرس الثاني: الضرب والقسمة',order:2,locked:false,
+       content:'الضرب هو جمع متكرر، والقسمة هي توزيع بالتساوي.',video:'',pdf:'',images:[]},
+      {id:'l3',unitId:'u3',subjectId:'sub_sci',title:'الدرس الأول: الخلية',order:1,locked:false,
+       content:'الخلية هي وحدة البناء الأساسية في الكائنات الحية.',video:'',pdf:'',images:[]}
+    ],
+    questions:[
+      Q('q1','sub_math','u1','l1','ما ناتج 5 × 4 ؟',['10','15','20','25'],2,'لأن 5 × 4 = 20 (الضرب جمع متكرر).','easy',10,['ضرب']),
+      Q('q2','sub_math','u1','l1','ما ناتج 12 + 8 ؟',['18','20','22','24'],1,'لأن 12 + 8 = 20.','easy',10,['جمع']),
+      Q('q3','sub_math','u1','l1','ما ناتج 30 - 17 ؟',['12','13','14','15'],1,'لأن 30 - 17 = 13.','easy',10,['طرح']),
+      Q('q4','sub_math','u1','l2','ما ناتج 36 ÷ 6 ؟',['5','6','7','8'],1,'لأن 6 × 6 = 36.','medium',15,['قسمة']),
+      Q('q5','sub_math','u1','l2','ما ناتج 7 × 8 ؟',['54','56','58','64'],1,'لأن 7 × 8 = 56.','medium',15,['ضرب']),
+      Q('q6','sub_math','u2','','ما هو 1/2 في صورة نسبة مئوية؟',['25%','40%','50%','75%'],2,'لأن 1/2 = 0.5 = 50%.','medium',15,['كسور']),
+      Q('q7','sub_math','u2','','ما هو 3/4 + 1/4 ؟',['1/2','3/4','1','4/8'],2,'لأن 3+1 = 4، و 4/4 = 1.','medium',15,['كسور']),
+      Q('q8','sub_math','','','ما هو العدد الأولي بين الأعداد التالية؟',['9','15','17','21'],2,'17 لا يقبل القسمة إلا على نفسه وعلى 1.','hard',20,['أعداد']),
+      Q('q9','sub_math','','','إذا كان س + 5 = 12، فما قيمة س؟',['5','6','7','8'],2,'س = 12 - 5 = 7.','easy',10,['جبر']),
+      Q('q10','sub_sci','u3','l3','ما هي وحدة البناء الأساسية في الكائنات الحية؟',['النسيج','الخلية','العضو','الجهاز'],1,'الخلية هي أصغر وحدة قادرة على الحياة.','easy',10,['أحياء']),
+      Q('q11','sub_sci','u3','l3','ما الغاز الذي تحتاجه النباتات في عملية البناء الضوئي؟',['الأكسجين','النيتروجين','ثاني أكسيد الكربون','الهيدروجين'],2,'النبات يستهلك ثاني أكسيد الكربون وينتج الأكسجين.','easy',10,['نبات']),
+      Q('q12','sub_sci','','','ما الكوكب الأقرب إلى الشمس؟',['الزهرة','عطارد','الأرض','المريخ'],1,'عطارد هو أقرب كوكب إلى الشمس.','easy',10,['فضاء']),
+      Q('q13','sub_ar','','','ما نوع كلمة «كتاب» من حيث النوع؟',['مذكر','مؤنث','جمع','مثنى'],0,'«كتاب» مذكر.','easy',10,['لغة']),
+      Q('q14','sub_ar','','','جمع كلمة «قلم» هو:',['أقلام','قلمون','قلمات','قلماء'],0,'جمع تكسير: أقلام.','easy',10,['لغة']),
+      Q('q15','sub_soc','','','ما هي عاصمة مصر؟',['الإسكندرية','القاهرة','أسوان','المنصورة'],1,'القاهرة هي العاصمة.','easy',10,['جغرافيا']),
+      Q('q16','sub_en','','','Choose: I ___ a student.',['am','is','are','be'],0,'مع I نستخدم am.','easy',10,['grammar'])
+    ],
+    quizzes:[
+      {id:'qz1',name:'الجولة السهلة',subjectId:'sub_math',unitId:'',lessonId:'',desc:'5 أسئلة سريعة',
+       questionIds:['q1','q2','q3','q9','q4'],random:false,count:5,time:0,points:10,locked:false},
+      {id:'qz2',name:'تحدي الأبطال 💀',subjectId:'sub_math',unitId:'',lessonId:'',desc:'أسئلة قوية',
+       questionIds:['q5','q6','q7','q8','q9'],random:false,count:5,time:120,points:20,locked:false},
+      {id:'qz3',name:'جولة العلوم',subjectId:'sub_sci',unitId:'',lessonId:'',desc:'كل ما يخص العلوم',
+       questionIds:['q10','q11','q12'],random:false,count:3,time:0,points:10,locked:false}
+    ],
+    notifications:[], activities:[], answerLog:[], suggestions:[], reports:[], polls:[], announcements:[],
+    achievements:[
+      {id:'a1',name:'أول 10 أسئلة',icon:'🥉',cond:'answered10',reward:20},
+      {id:'a2',name:'أول 100 سؤال',icon:'🥈',cond:'answered100',reward:100},
+      {id:'a3',name:'100 إجابة صحيحة',icon:'🧠',cond:'correct100',reward:150},
+      {id:'a4',name:'7 أيام متتالية',icon:'🔥',cond:'streak7',reward:200},
+      {id:'a5',name:'10 إجابات متتالية',icon:'⚡',cond:'combo10',reward:120},
+      {id:'a6',name:'المركز الأول',icon:'👑',cond:'rank1',reward:300},
+      {id:'a7',name:'أنهيت أول جولة',icon:'🎯',cond:'quiz1',reward:30},
+      {id:'a8',name:'أسطورة المنصة',icon:'🏆',cond:'points5000',reward:500}
+    ]
+  };
+}
+let DB;
+function loadDB(){
+  try{
+    const raw = localStorage.getItem(DB_KEY);
+    if(!raw){ DB = makeDefaultDB(); saveDB(); return DB; }
+    DB = JSON.parse(raw);
+    const d = makeDefaultDB();
+    DB.settings = Object.assign(d.settings, DB.settings||{});
+    ['users','subjects','units','lessons','questions','quizzes','notifications','activities','answerLog','suggestions','reports','achievements','polls','announcements']
+      .forEach(k=>{ if(!Array.isArray(DB[k])) DB[k]=d[k]; });
+    return DB;
+  }catch(e){ DB = makeDefaultDB(); return DB; }
+}
+function saveDB(){ try{ localStorage.setItem(DB_KEY, JSON.stringify(DB)); }catch(e){ console.warn(e); } }
+
+/* ==========================================================================
+   جلسة الأدمن
+   ========================================================================== */
+let ADMIN = null;
+function restoreAdmin(){
+  if(sessionStorage.getItem(ADMIN_SESSION) === 'yes') ADMIN = {user: DB.settings.adminUser};
+}
+function loginAdmin(user, pass){
+  if(user === DB.settings.adminUser && pass === DB.settings.adminPassword){
+    ADMIN = {user};
+    sessionStorage.setItem(ADMIN_SESSION,'yes');
+    return true;
+  }
+  return false;
+}
+function logoutAdmin(){
+  ADMIN = null;
+  sessionStorage.removeItem(ADMIN_SESSION);
+  state.page = 'dashboard';
+  render();
+}
+
+/* ==========================================================================
+   أدوات
+   ========================================================================== */
+function toast(msg, type){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show '+(type||'');
+  clearTimeout(t._t);
+  t._t = setTimeout(()=>t.className='toast '+(type||''), 2400);
+}
+function openModal(h){ document.getElementById('modalBox').innerHTML = h; document.getElementById('modal').classList.add('open'); }
+function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+document.getElementById('modal').addEventListener('click', e=>{ if(e.target.id==='modal') closeModal(); });
+document.getElementById('overlay').addEventListener('click', ()=>{
+  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+});
+function applySettings(){
+  const s = DB.settings;
+  document.documentElement.style.setProperty('--primary', s.primaryColor||'#6C5CE7');
+  document.documentElement.style.setProperty('--primary2', s.accentColor||'#a29bfe');
+  document.title = (s.platformName||'منصة') + ' — لوحة الإدارة';
+}
+function confirmBox(msg, onYes, danger){
+  openModal(`<h3>⚠️ تأكيد</h3>
+    <p class="muted mb">${esc(msg)}</p>
+    <div class="flex"><button class="btn ${danger?'bad':'ok'}" style="flex:1" id="okConfirm">نعم، تأكيد</button>
+      <button class="btn ghost" style="flex:1" onclick="closeModal()">إلغاء</button></div>`);
+  document.getElementById('okConfirm').onclick = ()=>{ closeModal(); onYes(); };
+}
+
+/* ==========================================================================
+   قائمة التنقل
+   ========================================================================== */
+const NAV = [
+  {k:'dashboard',   i:'📊', t:'لوحة التحكم'},
+  {k:'settings',    i:'⚙️', t:'إعدادات المنصة'},
+  {k:'students',    i:'👨‍🎓', t:'الطلاب'},
+  {k:'subjects',    i:'📚', t:'المواد'},
+  {k:'units',       i:'📖', t:'الوحدات'},
+  {k:'lessons',     i:'📕', t:'الدروس'},
+  {k:'questions',   i:'❓', t:'بنك الأسئلة'},
+  {k:'quizzes',     i:'🔥', t:'الجولات والاختبارات'},
+  {k:'notifications',i:'🔔',t:'الإشعارات'},
+  {k:'announcements',i:'📢',t:'الإعلانات'},
+  {k:'achievements',i:'🏅', t:'الإنجازات'},
+  {k:'activity',    i:'📜', t:'سجل النشاط'},
+  {k:'analytics',   i:'📈', t:'التحليلات'},
+  {k:'suggestions', i:'💡', t:'الاقتراحات'},
+  {k:'reports',     i:'🚩', t:'البلاغات'},
+  {k:'polls',       i:'🗳️', t:'التصويت'},
+  {k:'preview',     i:'👀', t:'معاينة كطالب'},
+  {k:'backup',      i:'💾', t:'نسخ واستعادة'}
+];
+
+let state = {page:'dashboard', params:{}};
+function go(p, params){
+  state.page = p;
+  state.params = params||{};
+  document.querySelector('.sidebar') && document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+  window.scrollTo({top:0,behavior:'instant'});
+  render();
+}
+
+/* ==========================================================================
+   شاشة الدخول
+   ========================================================================== */
+function loginView(){
+  return `
+  <div class="auth-wrap"><div class="auth-box">
+    <div class="adm-logo">👑</div>
+    <h1>لوحة الإدارة</h1>
+    <p class="sub">تحكم كامل في منصة ${esc(DB.settings.platformName)}</p>
+    <form data-form="adminLogin">
+      <div class="field"><label>اسم المدير</label><input class="inp" name="user" required autocomplete="username"></div>
+      <div class="field"><label>كلمة المرور</label><input class="inp" type="password" name="pass" required autocomplete="current-password"></div>
+      <button class="btn block" type="submit">🔐 دخول</button>
+    </form>
+    <p class="muted center mt" style="font-size:11.5px">افتراضي: admin / admin123 — يمكن تغييرهما من الإعدادات</p>
+  </div></div>`;
+}
+
+/* ==========================================================================
+   الهيكل العام
+   ========================================================================== */
+function shell(content){
+  const pendingSuggestions = DB.suggestions.filter(s=>s.status==='new').length;
+  const pendingReports = DB.reports.filter(r=>r.status==='new').length;
+  return `
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo">
+        <span class="l-ic">${esc(DB.settings.logo)}</span>
+        <span>${esc(DB.settings.platformName)}</span>
+      </div>
+      <nav>
+        ${NAV.map(n=>{
+          let badge = '';
+          if(n.k==='suggestions' && pendingSuggestions) badge = ` <span class="pill" style="background:var(--bad);color:#fff;border:0">${pendingSuggestions}</span>`;
+          if(n.k==='reports' && pendingReports) badge = ` <span class="pill" style="background:var(--bad);color:#fff;border:0">${pendingReports}</span>`;
+          return `<button class="nav-btn ${state.page===n.k?'active':''}" data-act="go" data-p="${n.k}">
+            <span class="n-ic">${n.i}</span><span>${n.t}</span>${badge}</button>`;
+        }).join('')}
+      </nav>
+    </aside>
+    <main class="main">
+      <div class="top">
+        <div class="flex">
+          <button class="icon-btn mobile-menu" data-act="toggleSide">☰</button>
+          <h1>${esc(NAV.find(n=>n.k===state.page)?.t || 'لوحة الإدارة')}</h1>
+        </div>
+        <div class="actions">
+          <button class="icon-btn" data-act="toggleTheme">${document.body.classList.contains('dark')?'☀️':'🌙'}</button>
+          <a class="btn ghost sm" href="index.html" target="_blank">👨‍🎓 عرض المنصة</a>
+          <button class="btn bad sm" data-act="logout">🚪 خروج</button>
+        </div>
+      </div>
+      ${content}
+    </main>
+  </div>`;
+}
+
+/* ==========================================================================
+   لوحة التحكم
+   ========================================================================== */
+function dashboardView(){
+  const users = DB.users.length;
+  const active = DB.users.filter(u=>u.status==='active').length;
+  const banned = DB.users.filter(u=>u.status==='banned').length;
+  const subs = DB.subjects.length;
+  const units = DB.units.length;
+  const lessons = DB.lessons.length;
+  const qs = DB.questions.length;
+  const quizzes = DB.quizzes.length;
+  const acts = DB.activities.length;
+  const last24 = DB.activities.filter(a=>a.time > now() - 86400000).length;
+  const totalPoints = DB.users.reduce((s,u)=>s+(u.points||0),0);
+  const totalAnswers = DB.answerLog.length;
+  const correctAnswers = DB.answerLog.filter(a=>a.correct).length;
+  const acc = totalAnswers ? Math.round(correctAnswers/totalAnswers*100) : 0;
+
+  const topStudents = [...DB.users].sort((a,b)=>(b.points||0)-(a.points||0)).slice(0,5);
+  const recentActs = DB.activities.slice(0,10);
+  const topQs = {};
+  DB.answerLog.forEach(a=>{ if(!a.correct){ topQs[a.qid]=(topQs[a.qid]||0)+1; }});
+  const hardestQs = Object.entries(topQs).sort((a,b)=>b[1]-a[1]).slice(0,5)
+    .map(([qid,n])=>({q: DB.questions.find(x=>x.id===qid), n})).filter(x=>x.q);
+
+  return `
+  <div class="grid g4 mb">
+    <div class="stat-box"><div class="s-ic">👨‍🎓</div><div class="s-t"><b>${users}</b><span>إجمالي الطلاب</span></div></div>
+    <div class="stat-box"><div class="s-ic" style="background:linear-gradient(135deg,#22c55e,#16a34a)">🟢</div><div class="s-t"><b>${active}</b><span>حسابات نشطة</span></div></div>
+    <div class="stat-box"><div class="s-ic" style="background:linear-gradient(135deg,#ef4444,#b91c1c)">🔴</div><div class="s-t"><b>${banned}</b><span>حسابات موقوفة</span></div></div>
+    <div class="stat-box"><div class="s-ic" style="background:linear-gradient(135deg,#f59e0b,#d97706)">⭐</div><div class="s-t"><b>${totalPoints}</b><span>مجموع النقاط</span></div></div>
+    <div class="stat-box"><div class="s-ic">📚</div><div class="s-t"><b>${subs}</b><span>مواد</span></div></div>
+    <div class="stat-box"><div class="s-ic">📖</div><div class="s-t"><b>${units}</b><span>وحدات</span></div></div>
+    <div class="stat-box"><div class="s-ic">📕</div><div class="s-t"><b>${lessons}</b><span>دروس</span></div></div>
+    <div class="stat-box"><div class="s-ic">❓</div><div class="s-t"><b>${qs}</b><span>أسئلة</span></div></div>
+    <div class="stat-box"><div class="s-ic">🔥</div><div class="s-t"><b>${quizzes}</b><span>جولات</span></div></div>
+    <div class="stat-box"><div class="s-ic">📜</div><div class="s-t"><b>${acts}</b><span>نشاطات</span></div></div>
+    <div class="stat-box"><div class="s-ic">🕒</div><div class="s-t"><b>${last24}</b><span>نشاط آخر 24س</span></div></div>
+    <div class="stat-box"><div class="s-ic">✅</div><div class="s-t"><b>${acc}%</b><span>نسبة الإجابات الصحيحة</span></div></div>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-t"><span>🏆 أعلى 5 طلاب</span></div>
+      ${topStudents.length ? topStudents.map((u,i)=>`
+        <div class="row">
+          <span class="av">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</span>
+          <div class="m"><b>${esc(u.name)}</b><span>@${esc(u.username)} • ${u.points||0} نقطة</span></div>
+        </div>`).join('') : '<p class="muted">لا يوجد طلاب بعد</p>'}
+    </div>
+    <div class="card">
+      <div class="card-t"><span>📜 آخر النشاطات</span><button class="btn ghost sm" data-act="go" data-p="activity">عرض الكل</button></div>
+      ${recentActs.length ? recentActs.map(a=>`
+        <div class="row">
+          <span class="av" style="font-size:14px">${iconForAct(a.type)}</span>
+          <div class="m"><b>${esc(a.userName)}</b><span>${esc(a.detail||a.type)}</span><span>${fmt(a.time)}</span></div>
+        </div>`).join('') : '<p class="muted">لا يوجد نشاط بعد</p>'}
+    </div>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-t"><span>💀 أصعب 5 أسئلة</span></div>
+      ${hardestQs.length ? hardestQs.map(({q,n})=>`
+        <div class="row">
+          <span class="av">❌</span>
+          <div class="m"><b>${esc(q.text.slice(0,60))}</b><span>${n} إجابة خاطئة</span></div>
+        </div>`).join('') : '<p class="muted">لا توجد بيانات</p>'}
+    </div>
+    <div class="card">
+      <div class="card-t"><span>🚀 إجراءات سريعة</span></div>
+      <div class="grid g2" style="gap:8px">
+        <button class="btn block" data-act="quickAdd" data-t="question">➕ سؤال</button>
+        <button class="btn block" data-act="quickAdd" data-t="subject">➕ مادة</button>
+        <button class="btn block ghost" data-act="quickAdd" data-t="quiz">➕ جولة</button>
+        <button class="btn block ghost" data-act="quickAdd" data-t="notification">🔔 إشعار</button>
+      </div>
+    </div>
+  </div>`;
+}
+function iconForAct(t){
+  return {login:'🔑',logout:'🚪',register:'✅',lesson:'📖',correct:'✅',wrong:'❌',quiz:'🏆',achievement:'🏅'}[t] || '📌';
+}
+
+/* ==========================================================================
+   إعدادات المنصة
+   ========================================================================== */
+function settingsView(){
+  const s = DB.settings;
+  return `
+  <div class="card">
+    <div class="card-t"><span>⚙️ إعدادات المنصة الأساسية</span></div>
+    <div class="grid g2">
+      <div class="field"><label>اسم المنصة</label><input class="inp" id="setName" value="${esc(s.platformName)}"></div>
+      <div class="field"><label>شعار المنصة (emoji أو رابط)</label><input class="inp" id="setLogo" value="${esc(s.logo)}"></div>
+      <div class="field"><label>لون أساسي</label>
+        <div class="flex"><input type="color" class="color-input" id="setPrimary" value="${esc(s.primaryColor)}">
+        <input class="inp" id="setPrimaryTxt" value="${esc(s.primaryColor)}" style="flex:1"></div></div>
+      <div class="field"><label>لون ثانوي</label>
+        <div class="flex"><input type="color" class="color-input" id="setAccent" value="${esc(s.accentColor)}">
+        <input class="inp" id="setAccentTxt" value="${esc(s.accentColor)}" style="flex:1"></div></div>
+    </div>
+    <div class="field"><label>وصف المنصة</label><input class="inp" id="setDesc" value="${esc(s.description)}"></div>
+    <div class="field"><label>رسالة الترحيب</label><input class="inp" id="setWelcome" value="${esc(s.welcome)}"></div>
+    <div class="field"><label>تذييل الصفحة</label><input class="inp" id="setFooter" value="${esc(s.footer)}"></div>
+    <button class="btn block" data-act="saveSettings">💾 حفظ الإعدادات</button>
+  </div>
+
+  <div class="card">
+    <div class="card-t"><span>🎛️ خيارات العرض</span></div>
+    <label class="switch mb"><input type="checkbox" id="optVideo" ${s.showVideo?'checked':''}><span class="tog"></span>عرض الفيديوهات في الدروس</label><br>
+    <label class="switch mb"><input type="checkbox" id="optPdf" ${s.showPdf?'checked':''}><span class="tog"></span>عرض ملفات PDF</label><br>
+    <label class="switch mb"><input type="checkbox" id="optImages" ${s.showImages?'checked':''}><span class="tog"></span>عرض الصور</label><br>
+    <label class="switch mb"><input type="checkbox" id="optRegister" ${s.allowRegister?'checked':''}><span class="tog"></span>السماح بتسجيل حسابات جديدة</label><br>
+    <label class="switch mb"><input type="checkbox" id="optMaint" ${s.maintenance?'checked':''}><span class="tog"></span>وضع الصيانة (إيقاف المنصة مؤقتًا)</label><br>
+    <button class="btn block mt" data-act="saveOptions">💾 حفظ الخيارات</button>
+  </div>
+
+  <div class="card">
+    <div class="card-t"><span>🔐 بيانات دخول المدير</span></div>
+    <div class="grid g2">
+      <div class="field"><label>اسم المدير</label><input class="inp" id="setAdminUser" value="${esc(s.adminUser)}"></div>
+      <div class="field"><label>كلمة المرور</label><input class="inp" type="text" id="setAdminPass" value="${esc(s.adminPassword)}"></div>
+    </div>
+    <button class="btn warn block" data-act="saveAdmin">🔑 تحديث بيانات المدير</button>
+  </div>
+
+  <div class="card">
+    <div class="card-t"><span>🎨 معاينة الألوان</span></div>
+    <div class="flex flex-wrap" style="gap:10px">
+      <span class="chip" style="background:${esc(s.primaryColor)};color:#fff;border:0">اللون الأساسي</span>
+      <span class="chip" style="background:${esc(s.accentColor)};color:#fff;border:0">اللون الثانوي</span>
+      <span class="chip">نموذج شريحة</span>
+      <button class="btn sm">زر أساسي</button>
+      <button class="btn sm ghost">زر ثانوي</button>
+      <button class="btn sm ok">زر نجاح</button>
+      <button class="btn sm bad">زر خطر</button>
+    </div>
+  </div>`;
+}
+
+/* ==========================================================================
+   الطلاب
+   ========================================================================== */
+function studentsView(){
+  const q = (state.params.q||'').toLowerCase();
+  let list = [...DB.users].sort((a,b)=>(b.points||0)-(a.points||0));
+  if(q) list = list.filter(u=>u.name.toLowerCase().includes(q) || u.username.toLowerCase().includes(q));
+
+  return `
+  <div class="card">
+    <div class="flex-between mb">
+      <div class="flex" style="flex:1">
+        <input class="inp" id="searchStd" placeholder="🔍 ابحث باسم الطالب..." value="${esc(state.params.q||'')}" style="flex:1">
+        <button class="btn ghost" data-act="clearStdSearch">مسح</button>
+      </div>
+      <span class="pill">${list.length} طالب</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-t"><span>👨‍🎓 قائمة الطلاب</span></div>
+    ${list.length ? `
+      <div style="overflow-x:auto">
+      <table>
+        <thead><tr>
+          <th>#</th><th>الطالب</th><th>النقاط</th><th>المستوى</th>
+          <th>الدقة</th><th>الحالة</th><th>آخر دخول</th><th>إجراءات</th>
+        </tr></thead>
+        <tbody>
+          ${list.map((u,i)=>{
+            const st = u.stats||{answered:0,correct:0};
+            const acc = st.answered ? Math.round(st.correct/st.answered*100) : 0;
+            const lv = levelOf(u.points||0);
+            return `<tr>
+              <td>${i+1}</td>
+              <td><b>${esc(u.name)}</b><br><span class="muted">@${esc(u.username)}</span></td>
+              <td><b>${u.points||0}</b></td>
+              <td>${lv.i} ${lv.k}</td>
+              <td>${acc}% (${st.correct}/${st.answered})</td>
+              <td>${u.status==='banned'?'<span class="tag bad">موقوف</span>':'<span class="tag ok">نشط</span>'}</td>
+              <td>${u.lastLogin?fmt(u.lastLogin):'—'}</td>
+              <td>
+                <button class="btn sm ghost" data-act="viewStudent" data-id="${u.id}">👁️</button>
+                <button class="btn sm ghost" data-act="notifyStudent" data-id="${u.id}">🔔</button>
+                <button class="btn sm ${u.status==='banned'?'ok':'warn'}" data-act="toggleStd" data-id="${u.id}">
+                  ${u.status==='banned'?'تفعيل':'إيقاف'}</button>
+                <button class="btn sm bad" data-act="delStudent" data-id="${u.id}">🗑️</button>
+              </td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+      </div>` : '<div class="empty"><span class="e">👥</span>لا يوجد طلاب</div>'}
+  </div>`;
+}
+
+/* ==========================================================================
+   المواد
+   ========================================================================== */
+function subjectsView(){
+  const subs = [...DB.subjects].sort((a,b)=>(a.order||0)-(b.order||0));
+  return `
+  <div class="card">
+    <div class="card-t"><span>📚 إدارة المواد</span>
+      <button class="btn sm" data-act="addSubject">➕ مادة جديدة</button></div>
+    <div class="grid g2">
+      ${subs.length ? subs.map(s=>{
+        const units = DB.units.filter(u=>u.subjectId===s.id).length;
+        const qs = DB.questions.filter(q=>q.subjectId===s.id).length;
+        const qz = DB.quizzes.filter(q=>q.subjectId===s.id).length;
+        return `<div class="card" style="border-right:5px solid ${esc(s.color)};margin-bottom:0">
+          <div class="flex-between">
+            <div class="flex">
+              <span style="font-size:30px">${esc(s.icon)}</span>
+              <div><b style="font-size:15px">${esc(s.name)}</b><br>
+                <span class="muted">${units} وحدة • ${qs} سؤال • ${qz} جولة</span></div>
+            </div>
+            <span class="pill">${s.visible!==false?'ظاهر':'مخفي'}</span>
+          </div>
+          <div class="flex mt" style="gap:6px;flex-wrap:wrap">
+            <button class="btn sm ghost" data-act="editSubject" data-id="${s.id}">✏️ تعديل</button>
+            <button class="btn sm ${s.visible!==false?'warn':'ok'}" data-act="toggleSubject" data-id="${s.id}">
+              ${s.visible!==false?'🔒 إخفاء':'🔓 إظهار'}</button>
+            <button class="btn sm bad" data-act="delSubject" data-id="${s.id}">🗑️ حذف</button>
+          </div>
+        </div>`;
+      }).join('') : '<div class="empty" style="grid-column:1/-1"><span class="e">📭</span>لا توجد مواد — أضف مادة جديدة</div>'}
+    </div>
+  </div>`;
+}
+
+/* ==========================================================================
+   الوحدات
+   ========================================================================== */
+function unitsView(){
+  const subs = DB.subjects;
+  const selSub = state.params.subjectId || (subs[0] ? subs[0].id : '');
+  const units = DB.units.filter(u=>!selSub || u.subjectId===selSub).sort((a,b)=>(a.order||0)-(b.order||0));
+
+  return `
+  <div class="card">
+    <div class="flex-between mb">
+      <div class="flex" style="gap:8px;flex-wrap:wrap">
+        <label style="font-weight:700;font-size:13px">تصفية بالمادة:</label>
+        <select class="inp" style="max-width:220px" id="filterSub">
+          <option value="">كل المواد</option>
+          ${subs.map(s=>`<option value="${s.id}" ${selSub===s.id?'selected':''}>${esc(s.icon+' '+s.name)}</option>`).join('')}
+        </select>
+      </div>
+      <button class="btn sm" data-act="addUnit">➕ وحدة جديدة</button>
+    </div>
+    ${units.length ? `
+      <table>
+        <thead><tr><th>#</th><th>الوحدة</th><th>المادة</th><th>الدروس</th><th>الأسئلة</th><th>إجراءات</th></tr></thead>
+        <tbody>
+          ${units.map((u,i)=>{
+            const s = DB.subjects.find(x=>x.id===u.subjectId);
+            const l = DB.lessons.filter(x=>x.unitId===u.id).length;
+            const q = DB.questions.filter(x=>x.unitId===u.id).length;
+            return `<tr>
+              <td>${i+1}</td>
+              <td><b>${esc(u.name)}</b></td>
+              <td>${s?esc(s.icon+' '+s.name):'—'}</td>
+              <td>${l}</td>
+              <td>${q}</td>
+              <td>
+                <button class="btn sm ghost" data-act="editUnit" data-id="${u.id}">✏️</button>
+                <button class="btn sm bad" data-act="delUnit" data-id="${u.id}">🗑️</button>
+              </td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>` : '<div class="empty"><span class="e">📭</span>لا توجد وحدات</div>'}
+  </div>`;
+}
+
+/* ==========================================================================
+   الدروس
+   ========================================================================== */
+function lessonsView(){
+  const units = DB.units;
+  const selUnit = state.params.unitId || '';
+  const lessons = DB.lessons.filter(l=>!selUnit || l.unitId===selUnit)
+    .sort((a,b)=>(a.order||0)-(b.order||0));
+
+  return `
+  <div class="card">
+    <div class="flex-between mb">
+      <div class="flex" style="gap:8px;flex-wrap:wrap">
+        <select class="inp" style="max-width:280px" id="filterUnit">
+          <option value="">كل الوحدات</option>
+          ${units.map(u=>{
+            const s = DB.subjects.find(x=>x.id===u.subjectId);
+            return `<option value="${u.id}" ${selUnit===u.id?'selected':''}>${esc((s?s.icon:'')+' '+u.name)}</option>`;
+          }).join('')}
+        </select>
+      </div>
+      <button class="btn sm" data-act="addLesson">➕ درس جديد</button>
+    </div>
+    ${lessons.length ? `
+      <table>
+        <thead><tr><th>#</th><th>الدرس</th><th>الوحدة</th><th>الحالة</th><th>محتوى</th><th>أسئلة</th><th>إجراءات</th></tr></thead>
+        <tbody>
+          ${lessons.map((l,i)=>{
+            const u = DB.units.find(x=>x.id===l.unitId);
+            const q = DB.questions.filter(x=>x.lessonId===l.id).length;
+            const hasContent = [];
+            if(l.content) hasContent.push('📝');
+            if(l.video) hasContent.push('🎥');
+            if(l.pdf) hasContent.push('📄');
+            if(l.images && l.images.length) hasContent.push('🖼️');
+            return `<tr>
+              <td>${i+1}</td>
+              <td><b>${esc(l.title)}</b></td>
+              <td>${u?esc(u.name):'—'}</td>
+              <td>${l.locked?'<span class="tag bad">مقفل</span>':'<span class="tag ok">مفتوح</span>'}</td>
+              <td>${hasContent.join(' ')||'—'}</td>
+              <td>${q}</td>
+              <td>
+                <button class="btn sm ghost" data-act="editLesson" data-id="${l.id}">✏️</button>
+                <button class="btn sm ${l.locked?'ok':'warn'}" data-act="toggleLesson" data-id="${l.id}">${l.locked?'🔓 فتح':'🔒 قفل'}</button>
+                <button class="btn sm bad" data-act="delLesson" data-id="${l.id}">🗑️</button>
+              </td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>` : '<div class="empty"><span class="e">📭</span>لا توجد دروس</div>'}
+  </div>`;
+}
+
+/* ==========================================================================
+   بنك الأسئلة
+   ========================================================================== */
+function questionsView(){
+  const qs = state.params.q || '';
+  const fSub = state.params.subjectId || '';
+  const fDiff = state.params.diff || '';
+  let list = [...DB.questions];
+  if(qs) list = list.filter(x=>x.text.includes(qs));
+  if(fSub) list = list.filter(x=>x.subjectId===fSub);
+  if(fDiff) list = list.filter(x=>x.difficulty===fDiff);
+
+  return `
+  <div class="card">
+    <div class="card-t"><span>❓ بنك الأسئلة (${DB.questions.length})</span>
+      <div class="flex" style="gap:7px">
+        <button class="btn sm ghost" data-act="bulkImport">📥 استيراد</button>
+        <button class="btn sm" data-act="addQuestion">➕ سؤال جديد</button>
+      </div>
+    </div>
+    <div class="grid g2 mb">
+      <input class="inp" id="searchQ" placeholder="🔍 ابحث في نص السؤال..." value="${esc(qs)}">
+      <select class="inp" id="filterQSub">
+        <option value="">كل المواد</option>
+        ${DB.subjects.map(s=>`<option value="${s.id}" ${fSub===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}
+      </select>
+      <select class="inp" id="filterQDiff">
+        <option value="">كل المستويات</option>
+        <option value="easy" ${fDiff==='easy'?'selected':''}>سهل</option>
+        <option value="medium" ${fDiff==='medium'?'selected':''}>متوسط</option>
+        <option value="hard" ${fDiff==='hard'?'selected':''}>صعب</option>
+      </select>
+      <button class="btn ghost" data-act="clearFilters">🔄 مسح الفلاتر</button>
+    </div>
+    <p class="muted mb">يظهر ${list.length} سؤال</p>
+
+    ${list.length ? list.map(q=>{
+      const s = DB.subjects.find(x=>x.id===q.subjectId);
+      const used = DB.quizzes.filter(qz=>(qz.questionIds||[]).includes(q.id)).length;
+      const correctCount = DB.answerLog.filter(a=>a.qid===q.id && a.correct).length;
+      const wrongCount = DB.answerLog.filter(a=>a.qid===q.id && !a.correct).length;
+      return `<div class="card" style="border-right:4px solid ${esc(s?s.color:'#ccc')};padding:13px;margin-bottom:9px">
+        <div class="flex-between mb">
+          <div>
+            ${s?`<span class="chip">${esc(s.icon)} ${esc(s.name)}</span>`:''}
+            <span class="chip">${q.difficulty==='easy'?'🟢 سهل':q.difficulty==='hard'?'🔴 صعب':'🟡 متوسط'}</span>
+            <span class="chip">⭐ ${q.points||10}</span>
+          </div>
+        </div>
+        <div style="font-weight:800;margin-bottom:9px;font-size:15px">${esc(q.text)}</div>
+        <div class="grid" style="gap:5px;margin-bottom:9px">
+          ${q.options.map((op,i)=>`<div class="${i===q.correct?'opt-correct':''}"
+            style="padding:7px 11px;border-radius:10px;background:${i===q.correct?'rgba(34,197,94,.15)':'var(--bg)'};
+            border:1px solid ${i===q.correct?'var(--ok)':'var(--border)'};font-size:13px">
+            <b>${['A','B','C','D'][i]}.</b> ${esc(op)} ${i===q.correct?'✓':''}
+          </div>`).join('')}
+        </div>
+        ${q.explanation?`<div class="muted" style="background:rgba(108,92,231,.08);padding:9px;border-radius:10px;font-size:12.5px">
+          🧠 <b>التفسير:</b> ${esc(q.explanation)}</div>`:''}
+        <div class="flex mt" style="gap:7px;flex-wrap:wrap">
+          <span class="pill">✅ ${correctCount}</span>
+          <span class="pill">❌ ${wrongCount}</span>
+          <span class="pill">🎯 في ${used} جولة</span>
+        </div>
+        <div class="flex mt" style="gap:7px;flex-wrap:wrap">
+          <button class="btn sm ghost" data-act="editQuestion" data-id="${q.id}">✏️ تعديل</button>
+          <button class="btn sm ghost" data-act="dupQuestion" data-id="${q.id}">📋 نسخ</button>
+          <button class="btn sm bad" data-act="delQuestion" data-id="${q.id}">🗑️ حذف</button>
+        </div>
+      </div>`;
+    }).join('') : '<div class="empty"><span class="e">📭</span>لا توجد أسئلة مطابقة</div>'}
+  </div>`;
+}
+
+/* ==========================================================================
+   الجولات
+   ========================================================================== */
+function quizzesView(){
+  return `
+  <div class="card">
+    <div class="card-t"><span>🔥 الجولات والاختبارات (${DB.quizzes.length})</span>
+      <button class="btn sm" data-act="addQuiz">➕ جولة جديدة</button></div>
+    ${DB.quizzes.length ? DB.quizzes.map(q=>{
+      const s = DB.subjects.find(x=>x.id===q.subjectId);
+      const qCount = q.random ? q.count : (q.questionIds||[]).length;
+      return `<div class="card" style="padding:13px;margin-bottom:9px">
+        <div class="flex-between mb">
+          <div class="flex">
+            <span style="font-size:26px">${s?esc(s.icon):'🔥'}</span>
+            <div><b>${esc(q.name)}</b><br>
+              <span class="muted">${esc(q.desc||'')}</span></div>
+          </div>
+          <span class="pill">${q.locked?'🔒 مقفلة':'✅ مفتوحة'}</span>
+        </div>
+        <div class="flex flex-wrap" style="gap:6px;margin-bottom:9px">
+          <span class="chip">📚 ${s?esc(s.name):'—'}</span>
+          <span class="chip">❓ ${qCount} سؤال</span>
+          <span class="chip">⭐ ${q.points||10}/سؤال</span>
+          ${q.time?`<span class="chip">⏱️ ${Math.round(q.time/60)} دقيقة</span>`:'<span class="chip">⏱️ بلا وقت</span>'}
+          ${q.random?'<span class="chip">🎲 عشوائي</span>':''}
+          ${q.exam?'<span class="chip">🎓 وضع امتحان</span>':''}
+        </div>
+        <div class="flex" style="gap:7px;flex-wrap:wrap">
+          <button class="btn sm ghost" data-act="editQuiz" data-id="${q.id}">✏️ تعديل</button>
+          <button class="btn sm ${q.locked?'ok':'warn'}" data-act="toggleQuiz" data-id="${q.id}">${q.locked?'🔓 فتح':'🔒 قفل'}</button>
+          <button class="btn sm bad" data-act="delQuiz" data-id="${q.id}">🗑️ حذف</button>
+        </div>
+      </div>`;
+    }).join('') : '<div class="empty"><span class="e">📭</span>لا توجد جولات — أضف جولة</div>'}
+  </div>`;
+}
+
+/* ==========================================================================
+   الإشعارات
+   ========================================================================== */
+function notificationsView(){
+  const list = [...DB.notifications].reverse();
+  return `
+  <div class="card">
+    <div class="card-t"><span>🔔 إرسال إشعار</span></div>
+    <div class="grid g2">
+      <div class="field"><label>نوع الإشعار</label>
+        <select class="inp" id="nType">
+          <option value="content">📚 محتوى جديد</option>
+          <option value="challenge">🏆 تحدي</option>
+          <option value="achievement">🎉 إنجاز</option>
+          <option value="announcement">📢 إعلان عام</option>
+          <option value="reminder">⏰ تذكير</option>
+        </select></div>
+      <div class="field"><label>العنوان</label><input class="inp" id="nTitle" placeholder="عنوان الإشعار"></div>
+    </div>
+    <div class="field"><label>النص</label><textarea class="inp" id="nBody" placeholder="نص الإشعار..."></textarea></div>
+    <div class="grid g2">
+      <div class="field"><label>المستلمون</label>
+        <select class="inp" id="nTarget">
+          <option value="all">👥 جميع الطلاب</option>
+          <option value="active">🟢 النشطين فقط</option>
+        </select></div>
+      <div class="field"><label>وقت الإرسال</label>
+        <select class="inp" id="nWhen">
+          <option value="now">⏱️ الآن</option>
+          <option value="schedule">📅 لاحقًا</option>
+        </select></div>
+    </div>
+    <div class="field" id="nSchedWrap" style="display:none">
+      <label>التاريخ والوقت</label>
+      <input type="datetime-local" class="inp" id="nSched">
+    </div>
+    <button class="btn block" data-act="sendNotif">🔔 إرسال</button>
+  </div>
+
+  <div class="card">
+    <div class="card-t"><span>📜 الإشعارات المرسلة (${list.length})</span>
+      <button class="btn sm bad" data-act="clearNotifs">🗑️ مسح الكل</button></div>
+    ${list.length ? list.slice(0,50).map(n=>`
+      <div class="row">
+        <span class="av">${n.type==='challenge'?'🏆':n.type==='content'?'📚':n.type==='achievement'?'🎉':'📢'}</span>
+        <div class="m"><b>${esc(n.title)}</b><span>${esc(n.body)}</span><span>${fmt(n.time)} • ${esc(n.target||'all')}</span></div>
+        <button class="btn sm bad" data-act="delNotif" data-id="${n.id}">🗑️</button>
+      </div>`).join('') : '<p class="muted center">لا توجد إشعارات</p>'}
+  </div>`;
+}
+
+/* ==========================================================================
+   الإعلانات
+   ========================================================================== */
+function announcementsView(){
+  return `
+  <div class="card">
+    <div class="card-t"><span>📢 إدارة الإعلانات</span></div>
+    <div class="field"><label>عنوان الإعلان</label><input class="inp" id="anTitle"></div>
+    <div class="field"><label>نص الإعلان</label><textarea class="inp" id="anBody"></textarea></div>
+    <div class="grid g2">
+      <div class="field"><label>الأولوية</label>
+        <select class="inp" id="anPriority">
+          <option value="normal">عادي</option>
+          <option value="important">مهم</option>
+          <option value="urgent">عاجل 🚨</option>
+        </select></div>
+      <div class="field"><label>مدة العرض (بالأيام)</label><input type="number" class="inp" id="anDays" value="7"></div>
+    </div>
+    <button class="btn block" data-act="saveAnnouncement">📢 نشر الإعلان</button>
+  </div>
+  <div class="card">
+    <div class="card-t"><span>📋 الإعلانات النشطة</span></div>
+    ${DB.announcements.length ? DB.announcements.map(a=>`
+      <div class="row" style="border-right:4px solid ${a.priority==='urgent'?'var(--bad)':a.priority==='important'?'var(--warn)':'var(--primary)'}">
+        <span class="av">📢</span>
+        <div class="m"><b>${esc(a.title)}</b><span>${esc(a.body)}</span><span>ينتهي ${fmt(a.expires)}</span></div>
+        <button class="btn sm bad" data-act="delAnnouncement" data-id="${a.id}">🗑️</button>
+      </div>`).join('') : '<p class="muted center">لا توجد إعلانات</p>'}
+  </div>`;
+}
+
+/* ==========================================================================
+   الإنجازات
+   ========================================================================== */
+function achievementsView(){
+  return `
+  <div class="card">
+    <div class="card-t"><span>🏅 إدارة الإنجازات (${DB.achievements.length})</span>
+      <button class="btn sm" data-act="addAchievement">➕ إنجاز جديد</button></div>
+    <div class="grid g3">
+      ${DB.achievements.map(a=>`
+        <div class="card" style="margin-bottom:0;text-align:center">
+          <div style="font-size:42px">${esc(a.icon)}</div>
+          <b style="font-size:14px">${esc(a.name)}</b>
+          <p class="muted" style="font-size:11.5px;margin:5px 0">الشرط: ${esc(a.cond)}</p>
+          <span class="chip">⭐ +${a.reward}</span>
+          <div class="flex mt" style="gap:6px;justify-content:center">
+            <button class="btn sm ghost" data-act="editAchievement" data-id="${a.id}">✏️</button>
+            <button class="btn sm bad" data-act="delAchievement" data-id="${a.id}">🗑️</button>
+          </div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+/* ==========================================================================
+   سجل النشاط
+   ========================================================================== */
+function activityView(){
+  const fType = state.params.type||'';
+  const fUser = state.params.userId||'';
+  let list = DB.activities;
+  if(fType) list = list.filter(a=>a.type===fType);
+  if(fUser) list = list.filter(a=>a.userId===fUser);
+  list = list.slice(0,200);
+  return `
+  <div class="card">
+    <div class="flex-between mb">
+      <div class="flex" style="gap:8px;flex-wrap:wrap">
+        <select class="inp" style="max-width:180px" id="actType">
+          <option value="">كل الأنشطة</option>
+          <option value="login" ${fType==='login'?'selected':''}>🔑 دخول</option>
+          <option value="logout" ${fType==='logout'?'selected':''}>🚪 خروج</option>
+          <option value="register" ${fType==='register'?'selected':''}>✅ تسجيل</option>
+          <option value="lesson" ${fType==='lesson'?'selected':''}>📖 دروس</option>
+          <option value="quiz" ${fType==='quiz'?'selected':''}>🏆 جولات</option>
+          <option value="correct" ${fType==='correct'?'selected':''}>✅ صحيحة</option>
+          <option value="wrong" ${fType==='wrong'?'selected':''}>❌ خاطئة</option>
+        </select>
+        <select class="inp" style="max-width:200px" id="actUser">
+          <option value="">كل الطلاب</option>
+          ${DB.users.map(u=>`<option value="${u.id}" ${fUser===u.id?'selected':''}>${esc(u.name)}</option>`).join('')}
+        </select>
+      </div>
+      <button class="btn sm bad" data-act="clearActivity">🗑️ مسح السجل</button>
+    </div>
+    ${list.length ? list.map(a=>`
+      <div class="row">
+        <span class="av" style="font-size:14px">${iconForAct(a.type)}</span>
+        <div class="m"><b>${esc(a.userName)}</b><span>${esc(a.detail||a.type)}</span><span>${fmtFull(a.time)}</span></div>
+      </div>`).join('') : '<div class="empty"><span class="e">📭</span>لا يوجد نشاط</div>'}
+  </div>`;
+}
+
+/* ==========================================================================
+   التحليلات
+   ========================================================================== */
+function analyticsView(){
+  const totalAns = DB.answerLog.length;
+  const correctAns = DB.answerLog.filter(a=>a.correct).length;
+  const wrongAns = totalAns - correctAns;
+  const acc = totalAns ? Math.round(correctAns/totalAns*100) : 0;
+
+  const subStats = {};
+  DB.answerLog.forEach(a=>{
+    const q = DB.questions.find(x=>x.id===a.qid);
+    if(!q) return;
+    const s = q.subjectId;
+    if(!subStats[s]) subStats[s] = {correct:0, total:0};
+    subStats[s].total++;
+    if(a.correct) subStats[s].correct++;
+  });
+
+  const qStats = {};
+  DB.answerLog.forEach(a=>{
+    if(!qStats[a.qid]) qStats[a.qid] = {correct:0, total:0};
+    qStats[a.qid].total++;
+    if(a.correct) qStats[a.qid].correct++;
+  });
+  const hardest = Object.entries(qStats).map(([qid,s])=>({
+    q: DB.questions.find(x=>x.id===qid),
+    pct: Math.round(s.correct/s.total*100),
+    total: s.total
+  })).filter(x=>x.q && x.total >= 3).sort((a,b)=>a.pct-b.pct).slice(0,10);
+
+  const easiest = Object.entries(qStats).map(([qid,s])=>({
+    q: DB.questions.find(x=>x.id===qid),
+    pct: Math.round(s.correct/s.total*100),
+    total: s.total
+  })).filter(x=>x.q && x.total >= 3).sort((a,b)=>b.pct-a.pct).slice(0,10);
+
+  const topStudents = [...DB.users].sort((a,b)=>(b.stats&&b.stats.correct||0)-(a.stats&&a.stats.correct||0)).slice(0,10);
+  const last7 = [];
+  for(let i=6; i>=0; i--){
+    const d = new Date(); d.setDate(d.getDate()-i); d.setHours(0,0,0,0);
+    const from = d.getTime(); const to = from + 86400000;
+    const c = DB.answerLog.filter(a=>a.time>=from && a.time<to).length;
+    last7.push({label: d.toLocaleDateString('ar-EG',{weekday:'short'}), c});
+  }
+  const maxC = Math.max(1, ...last7.map(x=>x.c));
+
+  return `
+  <div class="grid g4 mb">
+    <div class="stat-box"><div class="s-ic">📊</div><div class="s-t"><b>${totalAns}</b><span>إجمالي الإجابات</span></div></div>
+    <div class="stat-box"><div class="s-ic" style="background:linear-gradient(135deg,#22c55e,#16a34a)">✅</div><div class="s-t"><b>${correctAns}</b><span>صحيحة</span></div></div>
+    <div class="stat-box"><div class="s-ic" style="background:linear-gradient(135deg,#ef4444,#b91c1c)">❌</div><div class="s-t"><b>${wrongAns}</b><span>خاطئة</span></div></div>
+    <div class="stat-box"><div class="s-ic">🎯</div><div class="s-t"><b>${acc}%</b><span>الدقة العامة</span></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-t"><span>📈 الإجابات آخر 7 أيام</span></div>
+    <div class="flex" style="align-items:flex-end;gap:9px;height:160px">
+      ${last7.map(x=>`<div style="flex:1;text-align:center">
+        <div style="height:${Math.max(6,x.c/maxC*120)}px;background:linear-gradient(180deg,var(--primary),var(--primary2));border-radius:9px 9px 4px 4px"></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:5px">${x.label}</div>
+        <div style="font-size:10.5px;font-weight:800">${x.c}</div></div>`).join('')}
+    </div>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-t"><span>📚 أداء المواد</span></div>
+      ${Object.keys(subStats).length ? Object.entries(subStats).map(([sid,s])=>{
+        const sub = DB.subjects.find(x=>x.id===sid);
+        const p = Math.round(s.correct/s.total*100);
+        return `<div class="mb">
+          <div class="flex-between" style="margin-bottom:5px">
+            <b>${sub?esc(sub.icon+' '+sub.name):'—'}</b>
+            <span class="muted">${p}% (${s.correct}/${s.total})</span>
+          </div>
+          <div class="bar"><i style="width:${p}%;background:${p>=70?'var(--ok)':p>=40?'var(--warn)':'var(--bad)'}"></i></div>
+        </div>`;
+      }).join('') : '<p class="muted center">لا توجد بيانات</p>'}
+    </div>
+    <div class="card">
+      <div class="card-t"><span>🏆 أكثر الطلاب نشاطًا</span></div>
+      ${topStudents.length ? topStudents.map((u,i)=>`
+        <div class="row">
+          <span class="av">${i+1}</span>
+          <div class="m"><b>${esc(u.name)}</b><span>${u.stats?u.stats.correct:0} إجابة صحيحة • ${u.points||0} نقطة</span></div>
+        </div>`).join('') : '<p class="muted center">لا يوجد طلاب</p>'}
+    </div>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-t"><span>💀 أصعب الأسئلة</span></div>
+      ${hardest.length ? hardest.map(h=>`
+        <div class="mb">
+          <div class="flex-between" style="margin-bottom:5px">
+            <b style="font-size:12.5px">${esc(h.q.text.slice(0,50))}</b>
+            <span class="muted">${h.pct}%</span>
+          </div>
+          <div class="bar"><i style="width:${h.pct}%;background:${h.pct<40?'var(--bad)':h.pct<70?'var(--warn)':'var(--ok)'}"></i></div>
+        </div>`).join('') : '<p class="muted center">لا توجد بيانات كافية</p>'}
+    </div>
+    <div class="card">
+      <div class="card-t"><span>🟢 أسهل الأسئلة</span></div>
+      ${easiest.length ? easiest.map(h=>`
+        <div class="mb">
+          <div class="flex-between" style="margin-bottom:5px">
+            <b style="font-size:12.5px">${esc(h.q.text.slice(0,50))}</b>
+            <span class="muted">${h.pct}%</span>
+          </div>
+          <div class="bar"><i style="width:${h.pct}%;background:var(--ok)"></i></div>
+        </div>`).join('') : '<p class="muted center">لا توجد بيانات كافية</p>'}
+    </div>
+  </div>`;
+}
+
+/* ==========================================================================
+   الاقتراحات والبلاغات
+   ========================================================================== */
+function suggestionsView(){
+  const list = [...DB.suggestions].sort((a,b)=>b.time-a.time);
+  return `
+  <div class="card">
+    <div class="card-t"><span>💡 الاقتراحات والرسائل (${list.length})</span></div>
+    ${list.length ? list.map(s=>`
+      <div class="card" style="padding:13px;margin-bottom:9px">
+        <div class="flex-between mb">
+          <div>
+            <span class="tag ${s.type==='problem'?'bad':s.type==='request'?'warn':'ok'}">
+              ${s.type==='idea'?'💡 فكرة':s.type==='request'?'📚 طلب':'⚠️ مشكلة'}</span>
+            <span class="muted" style="margin-right:9px">${fmtFull(s.time)}</span>
+          </div>
+          <button class="btn sm ${s.status==='new'?'ok':'ghost'}" data-act="markSg" data-id="${s.id}">
+            ${s.status==='new'?'✅ جديد':'☑️ مقروء'}</button>
+        </div>
+        <b>${esc(s.userName)}</b>
+        <p class="muted mt" style="white-space:pre-wrap">${esc(s.text)}</p>
+        <div class="flex mt" style="gap:6px">
+          <button class="btn sm ghost" data-act="replySg" data-id="${s.id}">↩️ رد</button>
+          <button class="btn sm bad" data-act="delSg" data-id="${s.id}">🗑️ حذف</button>
+        </div>
+      </div>`).join('') : '<div class="empty"><span class="e">📭</span>لا توجد رسائل</div>'}
+  </div>`;
+}
+function reportsView(){
+  const list = [...DB.reports].sort((a,b)=>b.time-a.time);
+  return `
+  <div class="card">
+    <div class="card-t"><span>🚩 بلاغات الأسئلة (${list.length})</span></div>
+    ${list.length ? list.map(r=>{
+      const q = DB.questions.find(x=>x.id===r.qid);
+      return `<div class="card" style="padding:13px;margin-bottom:9px">
+        <div class="flex-between mb">
+          <span class="tag ${r.status==='new'?'bad':'ok'}">${r.status==='new'?'🔴 جديد':'✅ مُعالج'}</span>
+          <span class="muted">${fmtFull(r.time)}</span>
+        </div>
+        <b>${esc(r.userName)}</b>
+        <p class="muted" style="margin-top:5px">${esc(r.text)}</p>
+        ${q?`<div class="mt" style="background:var(--bg);padding:9px;border-radius:10px;font-size:13px">
+          <b>السؤال:</b> ${esc(q.text)}
+        </div>`:'<p class="muted">⚠️ السؤال المحذوف</p>'}
+        <div class="flex mt" style="gap:6px">
+          ${r.status==='new'?`<button class="btn sm ok" data-act="markRp" data-id="${r.id}">✅ معالجة</button>`:''}
+          ${q?`<button class="btn sm ghost" data-act="editQuestion" data-id="${q.id}">✏️ تعديل السؤال</button>`:''}
+          <button class="btn sm bad" data-act="delRp" data-id="${r.id}">🗑️</button>
+        </div>
+      </div>`;
+    }).join('') : '<div class="empty"><span class="e">📭</span>لا توجد بلاغات</div>'}
+  </div>`;
+}
+function pollsView(){
+  return `
+  <div class="card">
+    <div class="card-t"><span>🗳️ التصويت</span></div>
+    <div class="field"><label>السؤال</label><input class="inp" id="pollQ" placeholder="مثال: أي مادة تريدون إضافتها؟"></div>
+    <div class="field"><label>الخيارات (كل سطر خيار)</label><textarea class="inp" id="pollOpts" placeholder="رياضيات&#10;علوم&#10;لغة عربية"></textarea></div>
+    <button class="btn block" data-act="savePoll">🗳️ نشر التصويت</button>
+  </div>
+  <div class="card">
+    <div class="card-t"><span>📊 التصويتات النشطة</span></div>
+    ${DB.polls.length ? DB.polls.map(p=>`
+      <div class="card" style="padding:13px;margin-bottom:9px">
+        <b>${esc(p.q)}</b>
+        <div class="mt">${(p.options||[]).map((o,i)=>{
+          const votes = (p.votes||[]).filter(v=>v===i).length;
+          const total = (p.votes||[]).length || 1;
+          const pct = Math.round(votes/total*100);
+          return `<div class="mb">
+            <div class="flex-between" style="margin-bottom:4px">
+              <span>${esc(o)}</span><span class="muted">${votes} صوت (${pct}%)</span></div>
+            <div class="bar"><i style="width:${pct}%"></i></div></div>`;
+        }).join('')}</div>
+        <button class="btn sm bad mt" data-act="delPoll" data-id="${p.id}">🗑️ حذف</button>
+      </div>`).join('') : '<p class="muted center">لا توجد تصويتات</p>'}
+  </div>`;
+}
+
+/* ==========================================================================
+   المعاينة كطالب
+   ========================================================================== */
+function previewView(){
+  return `
+  <div class="card" style="text-align:center">
+    <div style="font-size:60px">👀</div>
+    <h2 style="margin:11px 0">معاينة المنصة كطالب</h2>
+    <p class="muted">شغّل منصة الطلاب في تبويب آخر وستجد كل تعديلاتك ظاهرة فورًا.</p>
+    <div class="flex center mt" style="justify-content:center;gap:9px;flex-wrap:wrap">
+      <a class="btn" href="index.html" target="_blank">🚀 فتح منصة الطلاب</a>
+      <button class="btn ghost" data-act="refreshData">🔄 تحديث البيانات</button>
+    </div>
+    <p class="muted mt" style="font-size:12px">سيظهر كل تعديل في الإدارة مباشرة عند الطلاب لأن البيانات مشتركة.</p>
+  </div>
+  <div class="grid g4">
+    <div class="stat-box"><div class="s-ic">👨‍🎓</div><div class="s-t"><b>${DB.users.length}</b><span>طالب مسجل</span></div></div>
+    <div class="stat-box"><div class="s-ic">📚</div><div class="s-t"><b>${DB.subjects.length}</b><span>مادة</span></div></div>
+    <div class="stat-box"><div class="s-ic">❓</div><div class="s-t"><b>${DB.questions.length}</b><span>سؤال</span></div></div>
+    <div class="stat-box"><div class="s-ic">🔥</div><div class="s-t"><b>${DB.quizzes.length}</b><span>جولة</span></div></div>
+  </div>`;
+}
+
+/* ==========================================================================
+   النسخ والاستعادة
+   ========================================================================== */
+function backupView(){
+  return `
+  <div class="card">
+    <div class="card-t"><span>💾 نسخ احتياطي / استعادة</span></div>
+    <p class="muted mb">احفظ نسخة من كل البيانات (الطلاب، الأسئلة، الجولات، ...) أو استعدها.</p>
+    <div class="grid g2">
+      <button class="btn" data-act="exportData">📥 تصدير نسخة JSON</button>
+      <button class="btn ghost" data-act="importData">📤 استيراد نسخة JSON</button>
+    </div>
+    <input type="file" id="importFile" accept=".json" style="display:none">
+  </div>
+
+  <div class="card">
+    <div class="card-t"><span>📊 حجم البيانات الحالية</span></div>
+    <div class="grid g3">
+      <div class="stat-box"><div class="s-t"><b>${DB.users.length}</b><span>طالب</span></div></div>
+      <div class="stat-box"><div class="s-t"><b>${DB.questions.length}</b><span>سؤال</span></div></div>
+      <div class="stat-box"><div class="s-t"><b>${DB.quizzes.length}</b><span>جولة</span></div></div>
+      <div class="stat-box"><div class="s-t"><b>${DB.answerLog.length}</b><span>إجابة</span></div></div>
+      <div class="stat-box"><div class="s-t"><b>${DB.activities.length}</b><span>نشاط</span></div></div>
+      <div class="stat-box"><div class="s-t"><b>${DB.notifications.length}</b><span>إشعار</span></div></div>
+    </div>
+  </div>
+
+  <div class="card" style="border:2px solid var(--bad)">
+    <div class="card-t"><span style="color:var(--bad)">⚠️ منطقة خطر</span></div>
+    <p class="muted mb">هذه الإجراءات لا يمكن التراجع عنها.</p>
+    <div class="grid g2">
+      <button class="btn warn" data-act="resetExceptUsers">🔄 مسح المحتوى (مع الاحتفاظ بالطلاب)</button>
+      <button class="btn bad" data-act="resetAll">💥 تصفير كل شيء</button>
+    </div>
+  </div>`;
+}
+
+/* ==========================================================================
+   Render
+   ========================================================================== */
+function render(){
+  applySettings();
+  const app = document.getElementById('app');
+  if(!ADMIN){ app.innerHTML = loginView(); return; }
+
+  let content = '';
+  switch(state.page){
+    case 'dashboard': content = dashboardView(); break;
+    case 'settings': content = settingsView(); break;
+    case 'students': content = studentsView(); break;
+    case 'subjects': content = subjectsView(); break;
+    case 'units': content = unitsView(); break;
+    case 'lessons': content = lessonsView(); break;
+    case 'questions': content = questionsView(); break;
+    case 'quizzes': content = quizzesView(); break;
+    case 'notifications': content = notificationsView(); break;
+    case 'announcements': content = announcementsView(); break;
+    case 'achievements': content = achievementsView(); break;
+    case 'activity': content = activityView(); break;
+    case 'analytics': content = analyticsView(); break;
+    case 'suggestions': content = suggestionsView(); break;
+    case 'reports': content = reportsView(); break;
+    case 'polls': content = pollsView(); break;
+    case 'preview': content = previewView(); break;
+    case 'backup': content = backupView(); break;
+    default: content = dashboardView();
+  }
+  app.innerHTML = shell(content);
+  bindDynamic();
+}
+
+function bindDynamic(){
+  const ft = document.getElementById('filterSub');
+  if(ft) ft.onchange = e => go('units', {subjectId: e.target.value});
+  const fu = document.getElementById('filterUnit');
+  if(fu) fu.onchange = e => go('lessons', {unitId: e.target.value});
+  const sq = document.getElementById('searchQ');
+  if(sq){
+    sq.oninput = e => {
+      clearTimeout(sq._t);
+      sq._t = setTimeout(()=>{
+        state.params.q = e.target.value;
+        state.params.subjectId = document.getElementById('filterQSub').value;
+        state.params.diff = document.getElementById('filterQDiff').value;
+        render();
+      }, 300);
+    };
+  }
+  const fqs = document.getElementById('filterQSub');
+  if(fqs) fqs.onchange = e => { state.params.subjectId = e.target.value; state.params.q = document.getElementById('searchQ').value; state.params.diff = document.getElementById('filterQDiff').value; render(); };
+  const fqd = document.getElementById('filterQDiff');
+  if(fqd) fqd.onchange = e => { state.params.diff = e.target.value; state.params.q = document.getElementById('searchQ').value; state.params.subjectId = document.getElementById('filterQSub').value; render(); };
+
+  const ss = document.getElementById('searchStd');
+  if(ss){
+    ss.oninput = e => { clearTimeout(ss._t); ss._t = setTimeout(()=>{ state.params.q = e.target.value; render(); }, 300); };
+  }
+
+  const at = document.getElementById('actType');
+  if(at) at.onchange = e => { state.params.type = e.target.value; render(); };
+  const au = document.getElementById('actUser');
+  if(au) au.onchange = e => { state.params.userId = e.target.value; render(); };
+
+  const nWhen = document.getElementById('nWhen');
+  if(nWhen) nWhen.onchange = e => { document.getElementById('nSchedWrap').style.display = e.target.value === 'schedule' ? 'block' : 'none'; };
+
+  const pc = document.getElementById('setPrimary');
+  const pct = document.getElementById('setPrimaryTxt');
+  if(pc && pct){ pc.oninput = e => pct.value = e.target.value; pct.oninput = e => pc.value = e.target.value; }
+  const ac = document.getElementById('setAccent');
+  const act = document.getElementById('setAccentTxt');
+  if(ac && act){ ac.oninput = e => act.value = e.target.value; act.oninput = e => ac.value = e.target.value; }
+}
+
+/* ==========================================================================
+   Events
+   ========================================================================== */
+document.addEventListener('click', e=>{
+  const t = e.target.closest('[data-act]');
+  if(!t) return;
+  const act = t.dataset.act;
+  const id = t.dataset.id;
+
+  switch(act){
+    case 'go': go(t.dataset.p); break;
+    case 'toggleSide':
+      document.querySelector('.sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('open');
+      break;
+    case 'toggleTheme':
+      document.body.classList.toggle('dark');
+      localStorage.setItem('zezo_theme_admin', document.body.classList.contains('dark')?'dark':'light');
+      render(); break;
+    case 'logout':
+      confirmBox('هل تريد تسجيل الخروج من لوحة الإدارة؟', ()=>logoutAdmin()); break;
+    case 'refreshData': loadDB(); toast('✅ تم تحديث البيانات','ok'); render(); break;
+
+    case 'saveSettings': {
+      const s = DB.settings;
+      s.platformName = document.getElementById('setName').value.trim() || 'منصة';
+      s.logo = document.getElementById('setLogo').value.trim() || '🚀';
+      s.primaryColor = document.getElementById('setPrimaryTxt').value.trim() || '#6C5CE7';
+      s.accentColor = document.getElementById('setAccentTxt').value.trim() || '#a29bfe';
+      s.description = document.getElementById('setDesc').value.trim();
+      s.welcome = document.getElementById('setWelcome').value.trim();
+      s.footer = document.getElementById('setFooter').value.trim();
+      saveDB(); toast('✅ تم حفظ الإعدادات','ok'); render(); break;
+    }
+    case 'saveOptions': {
+      const s = DB.settings;
+      s.showVideo = document.getElementById('optVideo').checked;
+      s.showPdf = document.getElementById('optPdf').checked;
+      s.showImages = document.getElementById('optImages').checked;
+      s.allowRegister = document.getElementById('optRegister').checked;
+      s.maintenance = document.getElementById('optMaint').checked;
+      saveDB(); toast('✅ تم حفظ الخيارات','ok'); break;
+    }
+    case 'saveAdmin': {
+      const u = document.getElementById('setAdminUser').value.trim();
+      const p = document.getElementById('setAdminPass').value.trim();
+      if(!u || !p) return toast('املأ الحقول','bad');
+      DB.settings.adminUser = u;
+      DB.settings.adminPassword = p;
+      saveDB(); toast('✅ تم التحديث','ok'); break;
+    }
+    case 'quickAdd': {
+      const t2 = t.dataset.t;
+      if(t2==='question') addQuestionModal();
+      if(t2==='subject') addSubjectModal();
+      if(t2==='quiz') addQuizModal();
+      if(t2==='notification') go('notifications');
+      break;
+    }
+
+    /* المواد */
+    case 'addSubject': addSubjectModal(); break;
+    case 'editSubject': editSubjectModal(id); break;
+    case 'toggleSubject': {
+      const s = DB.subjects.find(x=>x.id===id);
+      if(s){ s.visible = s.visible === false; saveDB(); render(); }
+      break;
+    }
+    case 'delSubject':
+      confirmBox('سيتم حذف المادة وكل ما يتعلق بها. متابعة؟', ()=>{
+        DB.subjects = DB.subjects.filter(x=>x.id!==id);
+        DB.units = DB.units.filter(u=>u.subjectId!==id);
+        DB.lessons = DB.lessons.filter(l=>l.subjectId!==id);
+        DB.questions = DB.questions.filter(q=>q.subjectId!==id);
+        DB.quizzes = DB.quizzes.filter(q=>q.subjectId!==id);
+        saveDB(); toast('✅ تم الحذف','ok'); render();
+      }, true);
+      break;
+
+    /* الوحدات */
+    case 'addUnit': addUnitModal(); break;
+    case 'editUnit': editUnitModal(id); break;
+    case 'delUnit':
+      confirmBox('سيتم حذف الوحدة ودروسها. متابعة؟', ()=>{
+        DB.units = DB.units.filter(u=>u.id!==id);
+        DB.lessons = DB.lessons.filter(l=>l.unitId!==id);
+        saveDB(); toast('✅ تم الحذف','ok'); render();
+      }, true);
+      break;
+
+    /* الدروس */
+    case 'addLesson': addLessonModal(); break;
+    case 'editLesson': editLessonModal(id); break;
+    case 'toggleLesson': {
+      const l = DB.lessons.find(x=>x.id===id);
+      if(l){ l.locked = !l.locked; saveDB(); render(); }
+      break;
+    }
+    case 'delLesson':
+      confirmBox('حذف الدرس؟', ()=>{
+        DB.lessons = DB.lessons.filter(x=>x.id!==id);
+        saveDB(); toast('✅ تم الحذف','ok'); render();
+      }, true);
+      break;
+
+    /* الأسئلة */
+    case 'addQuestion': addQuestionModal(); break;
+    case 'editQuestion': editQuestionModal(id); break;
+    case 'dupQuestion': {
+      const q = DB.questions.find(x=>x.id===id);
+      if(q){ const copy = {...q, id: uid('q')}; DB.questions.push(copy); saveDB(); toast('✅ تم النسخ','ok'); render(); }
+      break;
+    }
+    case 'delQuestion':
+      confirmBox('حذف السؤال؟', ()=>{
+        DB.questions = DB.questions.filter(x=>x.id!==id);
+        DB.quizzes.forEach(q=>{ q.questionIds = (q.questionIds||[]).filter(x=>x!==id); });
+        saveDB(); toast('✅ تم الحذف','ok'); render();
+      }, true);
+      break;
+    case 'bulkImport': bulkImportModal(); break;
+    case 'clearFilters': state.params = {}; render(); break;
+
+    /* الجولات */
+    case 'addQuiz': addQuizModal(); break;
+    case 'editQuiz': editQuizModal(id); break;
+    case 'toggleQuiz': {
+      const q = DB.quizzes.find(x=>x.id===id);
+      if(q){ q.locked = !q.locked; saveDB(); render(); }
+      break;
+    }
+    case 'delQuiz':
+      confirmBox('حذف الجولة؟', ()=>{
+        DB.quizzes = DB.quizzes.filter(x=>x.id!==id);
+        saveDB(); toast('✅ تم الحذف','ok'); render();
+      }, true);
+      break;
+
+    /* الإشعارات */
+    case 'sendNotif': {
+      const type = document.getElementById('nType').value;
+      const title = document.getElementById('nTitle').value.trim();
+      const body = document.getElementById('nBody').value.trim();
+      const target = document.getElementById('nTarget').value;
+      const when = document.getElementById('nWhen').value;
+      if(!title || !body) return toast('املأ العنوان والنص','bad');
+      let sendAt = now();
+      if(when === 'schedule'){
+        const dt = document.getElementById('nSched').value;
+        if(!dt) return toast('حدد وقت الإرسال','bad');
+        sendAt = new Date(dt).getTime();
+      }
+      DB.notifications.push({id:uid('n'), type, title, body, target, time: sendAt});
+      saveDB();
+      toast('✅ تم إرسال الإشعار','ok');
+      render();
+      break;
+    }
+    case 'delNotif':
+      DB.notifications = DB.notifications.filter(n=>n.id!==id);
+      saveDB(); render(); break;
+    case 'clearNotifs':
+      confirmBox('مسح كل الإشعارات؟', ()=>{ DB.notifications = []; saveDB(); render(); }, true); break;
+
+    /* الإعلانات */
+    case 'saveAnnouncement': {
+      const title = document.getElementById('anTitle').value.trim();
+      const body = document.getElementById('anBody').value.trim();
+      const priority = document.getElementById('anPriority').value;
+      const days = parseInt(document.getElementById('anDays').value)||7;
+      if(!title || !body) return toast('املأ الحقول','bad');
+      DB.announcements.push({id:uid('an'), title, body, priority, createdAt: now(), expires: now()+days*86400000});
+      saveDB(); toast('✅ تم النشر','ok'); render(); break;
+    }
+    case 'delAnnouncement':
+      DB.announcements = DB.announcements.filter(a=>a.id!==id);
+      saveDB(); render(); break;
+
+    /* الإنجازات */
+    case 'addAchievement': addAchievementModal(); break;
+    case 'editAchievement': editAchievementModal(id); break;
+    case 'delAchievement':
+      confirmBox('حذف الإنجاز؟', ()=>{
+        DB.achievements = DB.achievements.filter(a=>a.id!==id);
+        saveDB(); toast('✅ تم الحذف','ok'); render();
+      }, true);
+      break;
+
+    /* الطلاب */
+    case 'viewStudent': viewStudentModal(id); break;
+    case 'notifyStudent': notifyStudentModal(id); break;
+    case 'toggleStd': {
+      const u = DB.users.find(x=>x.id===id);
+      if(u){ u.status = u.status === 'banned' ? 'active' : 'banned'; saveDB(); render(); }
+      break;
+    }
+    case 'delStudent':
+      confirmBox('حذف الطالب نهائيًا؟', ()=>{
+        DB.users = DB.users.filter(x=>x.id!==id);
+        saveDB(); toast('✅ تم الحذف','ok'); render();
+      }, true);
+      break;
+    case 'clearStdSearch': state.params.q = ''; render(); break;
+
+    /* سجل النشاط */
+    case 'clearActivity':
+      confirmBox('مسح كل سجل النشاط؟', ()=>{ DB.activities = []; saveDB(); render(); }, true); break;
+
+    /* الاقتراحات */
+    case 'markSg': {
+      const s = DB.suggestions.find(x=>x.id===id);
+      if(s){ s.status = s.status==='new'?'read':'new'; saveDB(); render(); }
+      break;
+    }
+    case 'delSg':
+      DB.suggestions = DB.suggestions.filter(x=>x.id!==id);
+      saveDB(); render(); break;
+    case 'replySg': {
+      const s = DB.suggestions.find(x=>x.id===id);
+      if(!s) return;
+      openModal(`<h3>↩️ رد على ${esc(s.userName)}</h3>
+        <div class="field"><label>الرد</label><textarea class="inp" id="replyText"></textarea></div>
+        <button class="btn block" id="sendReply">📩 إرسال الرد</button>`);
+      document.getElementById('sendReply').onclick = ()=>{
+        const text = document.getElementById('replyText').value.trim();
+        if(!text) return toast('اكتب الرد','bad');
+        DB.notifications.push({id:uid('n'), type:'announcement', title:'رد الإدارة', body: text, target: s.userId, time: now(), userId: s.userId});
+        s.status = 'read';
+        saveDB(); closeModal(); toast('✅ تم الإرسال','ok'); render();
+      };
+      break;
+    }
+
+    /* البلاغات */
+    case 'markRp': {
+      const r = DB.reports.find(x=>x.id===id);
+      if(r){ r.status = 'done'; saveDB(); render(); }
+      break;
+    }
+    case 'delRp':
+      DB.reports = DB.reports.filter(x=>x.id!==id);
+      saveDB(); render(); break;
+
+    /* التصويت */
+    case 'savePoll': {
+      const q = document.getElementById('pollQ').value.trim();
+      const opts = document.getElementById('pollOpts').value.split('\n').map(x=>x.trim()).filter(Boolean);
+      if(!q || opts.length < 2) return toast('املأ السؤال وخيارين على الأقل','bad');
+      DB.polls.push({id:uid('poll'), q, options: opts, votes: [], createdAt: now()});
+      saveDB(); toast('✅ تم النشر','ok'); render(); break;
+    }
+    case 'delPoll':
+      DB.polls = DB.polls.filter(x=>x.id!==id);
+      saveDB(); render(); break;
+
+    /* النسخ */
+    case 'exportData': {
+      const data = JSON.stringify(DB, null, 2);
+      const blob = new Blob([data], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'zezo-backup-' + new Date().toISOString().slice(0,10) + '.json';
+      a.click();
+      toast('📥 تم التصدير','ok');
+      break;
+    }
+    case 'importData': document.getElementById('importFile').click(); break;
+    case 'resetExceptUsers':
+      confirmBox('مسح كل المحتوى مع الاحتفاظ بالطلاب؟', ()=>{
+        DB.subjects = []; DB.units = []; DB.lessons = []; DB.questions = []; DB.quizzes = [];
+        DB.activities = []; DB.answerLog = []; DB.notifications = []; DB.announcements = [];
+        saveDB(); toast('✅ تم المسح','ok'); render();
+      }, true);
+      break;
+    case 'resetAll':
+      confirmBox('⚠️ سيتم حذف كل شيء! هل أنت متأكد؟', ()=>{
+        localStorage.removeItem(DB_KEY);
+        localStorage.removeItem('zezoLearnSession_v2');
+        loadDB(); toast('💥 تم التصفير','ok'); render();
+      }, true);
+      break;
+  }
+});
+
+document.addEventListener('change', e=>{
+  if(e.target.id === 'importFile'){
+    const f = e.target.files[0];
+    if(!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try{
+        const data = JSON.parse(r.result);
+        if(!data.settings || !Array.isArray(data.users)) throw new Error('ملف غير صالح');
+        DB = data;
+        saveDB(); toast('✅ تم الاستيراد','ok'); render();
+      }catch(err){ toast('❌ ملف غير صالح', 'bad'); }
+    };
+    r.readAsText(f);
+  }
+});
+
+document.addEventListener('submit', e=>{
+  const f = e.target.closest('[data-form]');
+  if(!f) return;
+  e.preventDefault();
+  const fd = new FormData(f);
+  if(f.dataset.form === 'adminLogin'){
+    const u = (fd.get('user')||'').trim();
+    const p = (fd.get('pass')||'').trim();
+    if(loginAdmin(u, p)){ toast('👑 أهلاً بك', 'ok'); render(); }
+    else toast('بيانات غير صحيحة', 'bad');
+  }
+});
+
+/* ==========================================================================
+   Modals
+   ========================================================================== */
+function addSubjectModal(){
+  openModal(`<h3>➕ مادة جديدة</h3>
+    <div class="field"><label>اسم المادة</label><input class="inp" id="m_name"></div>
+    <div class="field"><label>الأيقونة (emoji)</label><input class="inp" id="m_icon" value="📚"></div>
+    <div class="field"><label>اللون</label><input type="color" class="color-input" id="m_color" value="#6C5CE7" style="width:100%;height:42px"></div>
+    <button class="btn block" id="saveSub">💾 حفظ</button>`);
+  document.getElementById('saveSub').onclick = ()=>{
+    const name = document.getElementById('m_name').value.trim();
+    if(!name) return toast('اكتب اسم المادة','bad');
+    DB.subjects.push({id: uid('sub'), name, icon: document.getElementById('m_icon').value.trim()||'📚',
+      color: document.getElementById('m_color').value, order: DB.subjects.length+1, visible:true});
+    saveDB(); closeModal(); toast('✅ تمت الإضافة','ok'); render();
+  };
+}
+function editSubjectModal(id){
+  const s = DB.subjects.find(x=>x.id===id);
+  if(!s) return;
+  openModal(`<h3>✏️ تعديل مادة</h3>
+    <div class="field"><label>الاسم</label><input class="inp" id="m_name" value="${esc(s.name)}"></div>
+    <div class="field"><label>الأيقونة</label><input class="inp" id="m_icon" value="${esc(s.icon)}"></div>
+    <div class="field"><label>اللون</label><input type="color" class="color-input" id="m_color" value="${esc(s.color)}" style="width:100%;height:42px"></div>
+    <div class="field"><label>الترتيب</label><input type="number" class="inp" id="m_order" value="${s.order||1}"></div>
+    <button class="btn block" id="saveSub">💾 حفظ</button>`);
+  document.getElementById('saveSub').onclick = ()=>{
+    s.name = document.getElementById('m_name').value.trim();
+    s.icon = document.getElementById('m_icon').value.trim();
+    s.color = document.getElementById('m_color').value;
+    s.order = parseInt(document.getElementById('m_order').value)||1;
+    saveDB(); closeModal(); toast('✅ تم الحفظ','ok'); render();
+  };
+}
+function addUnitModal(){
+  if(!DB.subjects.length) return toast('أضف مادة أولًا','bad');
+  openModal(`<h3>➕ وحدة جديدة</h3>
+    <div class="field"><label>المادة</label><select class="inp" id="m_sub">
+      ${DB.subjects.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>اسم الوحدة</label><input class="inp" id="m_name"></div>
+    <button class="btn block" id="saveU">💾 حفظ</button>`);
+  document.getElementById('saveU').onclick = ()=>{
+    const name = document.getElementById('m_name').value.trim();
+    if(!name) return toast('اكتب اسم الوحدة','bad');
+    DB.units.push({id: uid('u'), subjectId: document.getElementById('m_sub').value,
+      name, order: DB.units.length+1});
+    saveDB(); closeModal(); toast('✅ تمت الإضافة','ok'); render();
+  };
+}
+function editUnitModal(id){
+  const u = DB.units.find(x=>x.id===id);
+  if(!u) return;
+  openModal(`<h3>✏️ تعديل وحدة</h3>
+    <div class="field"><label>المادة</label><select class="inp" id="m_sub">
+      ${DB.subjects.map(s=>`<option value="${s.id}" ${s.id===u.subjectId?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>الاسم</label><input class="inp" id="m_name" value="${esc(u.name)}"></div>
+    <div class="field"><label>الترتيب</label><input type="number" class="inp" id="m_order" value="${u.order||1}"></div>
+    <button class="btn block" id="saveU">💾 حفظ</button>`);
+  document.getElementById('saveU').onclick = ()=>{
+    u.name = document.getElementById('m_name').value.trim();
+    u.subjectId = document.getElementById('m_sub').value;
+    u.order = parseInt(document.getElementById('m_order').value)||1;
+    saveDB(); closeModal(); toast('✅ تم الحفظ','ok'); render();
+  };
+}
+function addLessonModal(){
+  if(!DB.units.length) return toast('أضف وحدة أولًا','bad');
+  openModal(`<h3>➕ درس جديد</h3>
+    <div class="field"><label>الوحدة</label><select class="inp" id="m_unit">
+      ${DB.units.map(u=>`<option value="${u.id}">${esc(u.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>عنوان الدرس</label><input class="inp" id="m_title"></div>
+    <div class="field"><label>محتوى الشرح</label><textarea class="inp" id="m_content"></textarea></div>
+    <div class="field"><label>رابط فيديو (اختياري)</label><input class="inp" id="m_video"></div>
+    <div class="field"><label>رابط PDF (اختياري)</label><input class="inp" id="m_pdf"></div>
+    <div class="field"><label>روابط صور (سطر لكل صورة)</label><textarea class="inp" id="m_images"></textarea></div>
+    <button class="btn block" id="saveL">💾 حفظ</button>`);
+  document.getElementById('saveL').onclick = ()=>{
+    const title = document.getElementById('m_title').value.trim();
+    if(!title) return toast('اكتب عنوان الدرس','bad');
+    const unitId = document.getElementById('m_unit').value;
+    const u = DB.units.find(x=>x.id===unitId);
+    DB.lessons.push({
+      id: uid('l'), unitId, subjectId: u?u.subjectId:'', title, order: DB.lessons.length+1,
+      locked:false, content: document.getElementById('m_content').value.trim(),
+      video: document.getElementById('m_video').value.trim(),
+      pdf: document.getElementById('m_pdf').value.trim(),
+      images: document.getElementById('m_images').value.split('\n').map(x=>x.trim()).filter(Boolean)
+    });
+    saveDB(); closeModal(); toast('✅ تمت الإضافة','ok'); render();
+  };
+}
+function editLessonModal(id){
+  const l = DB.lessons.find(x=>x.id===id);
+  if(!l) return;
+  openModal(`<h3>✏️ تعديل درس</h3>
+    <div class="field"><label>الوحدة</label><select class="inp" id="m_unit">
+      ${DB.units.map(u=>`<option value="${u.id}" ${u.id===l.unitId?'selected':''}>${esc(u.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>العنوان</label><input class="inp" id="m_title" value="${esc(l.title)}"></div>
+    <div class="field"><label>الشرح</label><textarea class="inp" id="m_content">${esc(l.content||'')}</textarea></div>
+    <div class="field"><label>فيديو</label><input class="inp" id="m_video" value="${esc(l.video||'')}"></div>
+    <div class="field"><label>PDF</label><input class="inp" id="m_pdf" value="${esc(l.pdf||'')}"></div>
+    <div class="field"><label>الصور</label><textarea class="inp" id="m_images">${(l.images||[]).join('\n')}</textarea></div>
+    <button class="btn block" id="saveL">💾 حفظ</button>`);
+  document.getElementById('saveL').onclick = ()=>{
+    const unitId = document.getElementById('m_unit').value;
+    const u = DB.units.find(x=>x.id===unitId);
+    l.unitId = unitId;
+    l.subjectId = u?u.subjectId:l.subjectId;
+    l.title = document.getElementById('m_title').value.trim();
+    l.content = document.getElementById('m_content').value.trim();
+    l.video = document.getElementById('m_video').value.trim();
+    l.pdf = document.getElementById('m_pdf').value.trim();
+    l.images = document.getElementById('m_images').value.split('\n').map(x=>x.trim()).filter(Boolean);
+    saveDB(); closeModal(); toast('✅ تم الحفظ','ok'); render();
+  };
+}
+function addQuestionModal(){
+  openModal(`<h3>➕ سؤال جديد</h3>
+    <div class="field"><label>المادة</label><select class="inp" id="q_sub">
+      <option value="">— بدون —</option>
+      ${DB.subjects.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>الوحدة (اختياري)</label><select class="inp" id="q_unit">
+      <option value="">— بدون —</option>
+      ${DB.units.map(u=>`<option value="${u.id}">${esc(u.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>الدرس (اختياري)</label><select class="inp" id="q_lesson">
+      <option value="">— بدون —</option>
+      ${DB.lessons.map(l=>`<option value="${l.id}">${esc(l.title)}</option>`).join('')}</select></div>
+    <div class="field"><label>نص السؤال</label><textarea class="inp" id="q_text"></textarea></div>
+    <div class="field"><label>رابط صورة (اختياري)</label><input class="inp" id="q_img"></div>
+    <div class="grid g2">
+      <div class="field"><label>A</label><input class="inp" id="q_a"></div>
+      <div class="field"><label>B</label><input class="inp" id="q_b"></div>
+      <div class="field"><label>C</label><input class="inp" id="q_c"></div>
+      <div class="field"><label>D</label><input class="inp" id="q_d"></div>
+    </div>
+    <div class="field"><label>الإجابة الصحيحة</label><select class="inp" id="q_correct">
+      <option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option>
+    </select></div>
+    <div class="field"><label>التفسير</label><textarea class="inp" id="q_exp"></textarea></div>
+    <div class="grid g2">
+      <div class="field"><label>الصعوبة</label><select class="inp" id="q_diff">
+        <option value="easy">سهل</option><option value="medium">متوسط</option><option value="hard">صعب</option>
+      </select></div>
+      <div class="field"><label>النقاط</label><input type="number" class="inp" id="q_pts" value="10"></div>
+    </div>
+    <button class="btn block" id="saveQ">💾 حفظ</button>`);
+  document.getElementById('saveQ').onclick = ()=>{
+    const text = document.getElementById('q_text').value.trim();
+    const opts = ['q_a','q_b','q_c','q_d'].map(x=>document.getElementById(x).value.trim());
+    if(!text || opts.some(o=>!o)) return toast('املأ كل الحقول','bad');
+    DB.questions.push({
+      id: uid('q'),
+      subjectId: document.getElementById('q_sub').value,
+      unitId: document.getElementById('q_unit').value,
+      lessonId: document.getElementById('q_lesson').value,
+      text, image: document.getElementById('q_img').value.trim(),
+      options: opts,
+      correct: parseInt(document.getElementById('q_correct').value),
+      explanation: document.getElementById('q_exp').value.trim(),
+      difficulty: document.getElementById('q_diff').value,
+      points: parseInt(document.getElementById('q_pts').value)||10,
+      tags: []
+    });
+    saveDB(); closeModal(); toast('✅ تمت الإضافة','ok'); render();
+  };
+}
+function editQuestionModal(id){
+  const q = DB.questions.find(x=>x.id===id);
+  if(!q) return;
+  openModal(`<h3>✏️ تعديل سؤال</h3>
+    <div class="field"><label>المادة</label><select class="inp" id="q_sub">
+      <option value="">— بدون —</option>
+      ${DB.subjects.map(s=>`<option value="${s.id}" ${s.id===q.subjectId?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>الوحدة</label><select class="inp" id="q_unit">
+      <option value="">— بدون —</option>
+      ${DB.units.map(u=>`<option value="${u.id}" ${u.id===q.unitId?'selected':''}>${esc(u.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>الدرس</label><select class="inp" id="q_lesson">
+      <option value="">— بدون —</option>
+      ${DB.lessons.map(l=>`<option value="${l.id}" ${l.id===q.lessonId?'selected':''}>${esc(l.title)}</option>`).join('')}</select></div>
+    <div class="field"><label>نص السؤال</label><textarea class="inp" id="q_text">${esc(q.text)}</textarea></div>
+    <div class="field"><label>رابط الصورة</label><input class="inp" id="q_img" value="${esc(q.image||'')}"></div>
+    <div class="grid g2">
+      ${['a','b','c','d'].map((k,i)=>`<div class="field"><label>${k.toUpperCase()}</label>
+        <input class="inp" id="q_${k}" value="${esc(q.options[i]||'')}"></div>`).join('')}
+    </div>
+    <div class="field"><label>الإجابة الصحيحة</label><select class="inp" id="q_correct">
+      ${['A','B','C','D'].map((k,i)=>`<option value="${i}" ${i===q.correct?'selected':''}>${k}</option>`).join('')}
+    </select></div>
+    <div class="field"><label>التفسير</label><textarea class="inp" id="q_exp">${esc(q.explanation||'')}</textarea></div>
+    <div class="grid g2">
+      <div class="field"><label>الصعوبة</label><select class="inp" id="q_diff">
+        <option value="easy" ${q.difficulty==='easy'?'selected':''}>سهل</option>
+        <option value="medium" ${q.difficulty==='medium'?'selected':''}>متوسط</option>
+        <option value="hard" ${q.difficulty==='hard'?'selected':''}>صعب</option>
+      </select></div>
+      <div class="field"><label>النقاط</label><input type="number" class="inp" id="q_pts" value="${q.points||10}"></div>
+    </div>
+    <button class="btn block" id="saveQ">💾 حفظ</button>`);
+  document.getElementById('saveQ').onclick = ()=>{
+    q.text = document.getElementById('q_text').value.trim();
+    q.image = document.getElementById('q_img').value.trim();
+    q.options = ['q_a','q_b','q_c','q_d'].map(x=>document.getElementById(x).value.trim());
+    q.subjectId = document.getElementById('q_sub').value;
+    q.unitId = document.getElementById('q_unit').value;
+    q.lessonId = document.getElementById('q_lesson').value;
+    q.correct = parseInt(document.getElementById('q_correct').value);
+    q.explanation = document.getElementById('q_exp').value.trim();
+    q.difficulty = document.getElementById('q_diff').value;
+    q.points = parseInt(document.getElementById('q_pts').value)||10;
+    saveDB(); closeModal(); toast('✅ تم الحفظ','ok'); render();
+  };
+}
+function bulkImportModal(){
+  openModal(`<h3>📥 استيراد أسئلة</h3>
+    <p class="muted mb">الصق كل سؤال في سطر بالشكل:<br>
+    <code style="font-size:11px">السؤال | A | B | C | D | رقم الإجابة(0-3) | التفسير</code></p>
+    <div class="field"><label>المادة</label><select class="inp" id="bi_sub">
+      <option value="">— بدون —</option>
+      ${DB.subjects.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>الأسئلة</label><textarea class="inp" id="bi_text" style="min-height:220px" placeholder="ما ناتج 2+2؟ | 3 | 4 | 5 | 6 | 1 | لأن 2+2=4"></textarea></div>
+    <button class="btn block" id="doImport">📥 استيراد</button>`);
+  document.getElementById('doImport').onclick = ()=>{
+    const lines = document.getElementById('bi_text').value.split('\n').map(l=>l.trim()).filter(Boolean);
+    const subId = document.getElementById('bi_sub').value;
+    let count = 0;
+    lines.forEach(line=>{
+      const parts = line.split('|').map(p=>p.trim());
+      if(parts.length < 6) return;
+      const [text,a,b,c,d,correct,exp] = parts;
+      if(!text || !a || !b || !c || !d) return;
+      const ci = parseInt(correct);
+      if(isNaN(ci) || ci < 0 || ci > 3) return;
+      DB.questions.push({
+        id: uid('q'), subjectId: subId, unitId:'', lessonId:'',
+        text, image:'', options:[a,b,c,d], correct: ci,
+        explanation: exp||'', difficulty:'medium', points:10, tags:[]
+      });
+      count++;
+    });
+    saveDB();
+    closeModal();
+    toast(`✅ تم استيراد ${count} سؤال`,'ok');
+    render();
+  };
+}
+function addQuizModal(){
+  openModal(`<h3>➕ جولة جديدة</h3>
+    <div class="field"><label>اسم الجولة</label><input class="inp" id="qz_name"></div>
+    <div class="field"><label>الوصف</label><input class="inp" id="qz_desc"></div>
+    <div class="field"><label>المادة</label><select class="inp" id="qz_sub">
+      <option value="">— بدون —</option>
+      ${DB.subjects.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>الأسئلة (حدد المناسب)</label>
+      <div style="max-height:220px;overflow:auto;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:9px">
+        ${DB.questions.map(q=>`<label style="display:flex;align-items:center;gap:7px;padding:5px;font-size:12.5px">
+          <input type="checkbox" value="${q.id}" class="qz_q"> ${esc(q.text.slice(0,80))}</label>`).join('')}
+      </div>
+    </div>
+    <div class="grid g3">
+      <div class="field"><label>الوقت (ثواني، 0=بدون)</label><input type="number" class="inp" id="qz_time" value="0"></div>
+      <div class="field"><label>النقاط/سؤال</label><input type="number" class="inp" id="qz_pts" value="10"></div>
+      <div class="field"><label>وضع امتحان</label><select class="inp" id="qz_exam">
+        <option value="0">لا</option><option value="1">نعم</option></select></div>
+    </div>
+    <button class="btn block" id="saveQz">💾 حفظ</button>`);
+  document.getElementById('saveQz').onclick = ()=>{
+    const name = document.getElementById('qz_name').value.trim();
+    if(!name) return toast('اكتب اسم الجولة','bad');
+    const ids = [...document.querySelectorAll('.qz_q:checked')].map(x=>x.value);
+    if(!ids.length) return toast('اختر أسئلة','bad');
+    DB.quizzes.push({
+      id: uid('qz'), name, desc: document.getElementById('qz_desc').value.trim(),
+      subjectId: document.getElementById('qz_sub').value, unitId:'', lessonId:'',
+      questionIds: ids, random:false, count: ids.length,
+      time: parseInt(document.getElementById('qz_time').value)||0,
+      points: parseInt(document.getElementById('qz_pts').value)||10,
+      exam: document.getElementById('qz_exam').value === '1',
+      locked:false
+    });
+    saveDB(); closeModal(); toast('✅ تمت الإضافة','ok'); render();
+  };
+}
+function editQuizModal(id){
+  const q = DB.quizzes.find(x=>x.id===id);
+  if(!q) return;
+  openModal(`<h3>✏️ تعديل جولة</h3>
+    <div class="field"><label>الاسم</label><input class="inp" id="qz_name" value="${esc(q.name)}"></div>
+    <div class="field"><label>الوصف</label><input class="inp" id="qz_desc" value="${esc(q.desc||'')}"></div>
+    <div class="field"><label>المادة</label><select class="inp" id="qz_sub">
+      <option value="">— بدون —</option>
+      ${DB.subjects.map(s=>`<option value="${s.id}" ${s.id===q.subjectId?'selected':''}>${esc(s.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>الأسئلة</label>
+      <div style="max-height:220px;overflow:auto;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:9px">
+        ${DB.questions.map(x=>`<label style="display:flex;align-items:center;gap:7px;padding:5px;font-size:12.5px">
+          <input type="checkbox" value="${x.id}" class="qz_q" ${(q.questionIds||[]).includes(x.id)?'checked':''}> ${esc(x.text.slice(0,80))}</label>`).join('')}
+      </div>
+    </div>
+    <div class="grid g3">
+      <div class="field"><label>الوقت</label><input type="number" class="inp" id="qz_time" value="${q.time||0}"></div>
+      <div class="field"><label>النقاط</label><input type="number" class="inp" id="qz_pts" value="${q.points||10}"></div>
+      <div class="field"><label>امتحان</label><select class="inp" id="qz_exam">
+        <option value="0" ${!q.exam?'selected':''}>لا</option>
+        <option value="1" ${q.exam?'selected':''}>نعم</option></select></div>
+    </div>
+    <button class="btn block" id="saveQz">💾 حفظ</button>`);
+  document.getElementById('saveQz').onclick = ()=>{
+    q.name = document.getElementById('qz_name').value.trim();
+    q.desc = document.getElementById('qz_desc').value.trim();
+    q.subjectId = document.getElementById('qz_sub').value;
+    q.questionIds = [...document.querySelectorAll('.qz_q:checked')].map(x=>x.value);
+    q.time = parseInt(document.getElementById('qz_time').value)||0;
+    q.points = parseInt(document.getElementById('qz_pts').value)||10;
+    q.exam = document.getElementById('qz_exam').value === '1';
+    q.count = q.questionIds.length;
+    saveDB(); closeModal(); toast('✅ تم الحفظ','ok'); render();
+  };
+}
+function addAchievementModal(){
+  openModal(`<h3>➕ إنجاز جديد</h3>
+    <div class="field"><label>الاسم</label><input class="inp" id="a_name"></div>
+    <div class="field"><label>الأيقونة</label><input class="inp" id="a_icon" value="🏅"></div>
+    <div class="field"><label>الشرط (كود داخلي)</label><input class="inp" id="a_cond" placeholder="answered10, correct100, streak7..."></div>
+    <div class="field"><label>المكافأة (نقاط)</label><input type="number" class="inp" id="a_reward" value="50"></div>
+    <button class="btn block" id="saveA">💾 حفظ</button>`);
+  document.getElementById('saveA').onclick = ()=>{
+    const name = document.getElementById('a_name').value.trim();
+    if(!name) return toast('اكتب الاسم','bad');
+    DB.achievements.push({
+      id: uid('a'), name,
+      icon: document.getElementById('a_icon').value.trim()||'🏅',
+      cond: document.getElementById('a_cond').value.trim(),
+      reward: parseInt(document.getElementById('a_reward').value)||50
+    });
+    saveDB(); closeModal(); toast('✅ تمت الإضافة','ok'); render();
+  };
+}
+function editAchievementModal(id){
+  const a = DB.achievements.find(x=>x.id===id);
+  if(!a) return;
+  openModal(`<h3>✏️ تعديل إنجاز</h3>
+    <div class="field"><label>الاسم</label><input class="inp" id="a_name" value="${esc(a.name)}"></div>
+    <div class="field"><label>الأيقونة</label><input class="inp" id="a_icon" value="${esc(a.icon)}"></div>
+    <div class="field"><label>الشرط</label><input class="inp" id="a_cond" value="${esc(a.cond)}"></div>
+    <div class="field"><label>المكافأة</label><input type="number" class="inp" id="a_reward" value="${a.reward}"></div>
+    <button class="btn block" id="saveA">💾 حفظ</button>`);
+  document.getElementById('saveA').onclick = ()=>{
+    a.name = document.getElementById('a_name').value.trim();
+    a.icon = document.getElementById('a_icon').value.trim();
+    a.cond = document.getElementById('a_cond').value.trim();
+    a.reward = parseInt(document.getElementById('a_reward').value)||0;
+    saveDB(); closeModal(); toast('✅ تم الحفظ','ok'); render();
+  };
+}
+function viewStudentModal(id){
+  const u = DB.users.find(x=>x.id===id);
+  if(!u) return;
+  const st = u.stats||{answered:0,correct:0};
+  const acc = st.answered ? Math.round(st.correct/st.answered*100) : 0;
+  const lv = levelOf(u.points||0);
+  const recent = DB.activities.filter(a=>a.userId===u.id).slice(0,15);
+  openModal(`<h3>👤 ${esc(u.name)}</h3>
+    <div class="grid g2 mb">
+      <div class="stat-box"><div class="s-t"><b>${u.points||0}</b><span>نقطة</span></div></div>
+      <div class="stat-box"><div class="s-t"><b>${lv.i} ${lv.k}</b><span>المستوى</span></div></div>
+      <div class="stat-box"><div class="s-t"><b>${acc}%</b><span>الدقة</span></div></div>
+      <div class="stat-box"><div class="s-t"><b>${(u.badges||[]).length}</b><span>إنجاز</span></div></div>
+    </div>
+    <p class="muted">@${esc(u.username)} • ${u.status==='banned'?'🔴 موقوف':'🟢 نشط'}</p>
+    <p class="muted">التسجيل: ${fmtFull(u.createdAt)} • آخر دخول: ${u.lastLogin?fmtFull(u.lastLogin):'—'}</p>
+    <p class="muted">🔥 سلسلة: ${u.streak||0} يوم</p>
+    <h3 style="margin-top:14px">📜 آخر الأنشطة</h3>
+    ${recent.map(a=>`<div class="row"><span class="av">${iconForAct(a.type)}</span>
+      <div class="m"><b>${esc(a.detail||a.type)}</b><span>${fmtFull(a.time)}</span></div></div>`).join('') || '<p class="muted">لا يوجد نشاط</p>'}`);
+}
+function notifyStudentModal(id){
+  const u = DB.users.find(x=>x.id===id);
+  if(!u) return;
+  openModal(`<h3>🔔 إشعار لـ ${esc(u.name)}</h3>
+    <div class="field"><label>العنوان</label><input class="inp" id="ns_t"></div>
+    <div class="field"><label>النص</label><textarea class="inp" id="ns_b"></textarea></div>
+    <button class="btn block" id="sendNs">📩 إرسال</button>`);
+  document.getElementById('sendNs').onclick = ()=>{
+    const title = document.getElementById('ns_t').value.trim();
+    const body = document.getElementById('ns_b').value.trim();
+    if(!title || !body) return toast('املأ الحقول','bad');
+    DB.notifications.push({id: uid('n'), type:'announcement', title, body, target: id, time: now(), userId: id});
+    saveDB(); closeModal(); toast('✅ تم الإرسال','ok');
+  };
+}
+
+/* ==========================================================================
+   Init
+   ========================================================================== */
+(function init(){
+  if(localStorage.getItem('zezo_theme_admin')==='dark') document.body.classList.add('dark');
+  loadDB();
+  restoreAdmin();
+  render();
+  window.addEventListener('storage', e=>{
+    if(e.key === DB_KEY){ loadDB(); render(); }
+  });
+})();
+</script>
+</body>
+</html>
